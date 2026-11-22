@@ -1,0 +1,1010 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DataVerge · Program Kemitraan Cabang Perekaman</title>
+<meta name="description" content="Program kemitraan DataVerge untuk bisnis lokal yang ingin menjalankan cabang perekaman video aktivitas, dengan laporan per DCO, per task, dan per shift di DCOTrack.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* Tokens dari DESIGN.md. Teks sekunder digelapkan sedikit (#5F6B7D) agar lolos AA di Pale Blue dan Soft Surface.
+   Teks/tombol biru memakai Deep Blue karena Primary Blue + teks putih hanya ~4.3:1. */
+:root{
+  --blue:#1677E8; --blue-deep:#0757C9; --blue-deeper:#0646A3;
+  --sky:#70C5F4; --pale:#EAF6FD; --bar:#BEDDF8;
+  --lime:#C8F45A;
+  --ink:#111827; --text2:#5F6B7D; --border:#E8EDF2;
+  --surface:#FFFFFF; --soft:#F5F7FA;
+  --r-card:20px; --r-sm:12px; --r-xs:8px;
+  --wrap:1200px;
+  --f:'Inter',system-ui,-apple-system,'Segoe UI',sans-serif;
+}
+*,*::before,*::after{box-sizing:border-box}
+html{-webkit-text-size-adjust:100%}
+@media (prefers-reduced-motion:no-preference){html{scroll-behavior:smooth}}
+body{margin:0;font-family:var(--f);color:var(--ink);background:var(--surface);font-size:16px;line-height:1.55;-webkit-font-smoothing:antialiased}
+h1,h2,h3,p,ul,ol,dl,dd,figure{margin:0}
+ul,ol{padding:0;list-style:none}
+img,svg{display:block;max-width:100%}
+a{color:var(--blue-deep)}
+a[href],button,summary,select,label[for],input[type=checkbox]{cursor:pointer}
+button:disabled{cursor:not-allowed}
+:focus-visible{outline:3px solid var(--blue-deep);outline-offset:2px;border-radius:6px}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:16px;top:-60px;background:var(--ink);color:#fff;padding:10px 14px;border-radius:var(--r-xs);z-index:100;text-decoration:none}
+.skip:focus{top:12px}
+.wrap{max-width:var(--wrap);margin:0 auto;padding:0 24px}
+section[id]{scroll-margin-top:84px}
+.num{font-variant-numeric:tabular-nums}
+
+/* ---------- Header ---------- */
+.site-head{position:sticky;top:0;z-index:50;background:rgba(255,255,255,.96);border-bottom:1px solid transparent;transition:border-color .2s}
+.site-head.scrolled{border-bottom-color:var(--border)}
+.head-row{display:flex;align-items:center;gap:24px;height:68px}
+.brand{font-weight:700;font-size:20px;letter-spacing:-.01em;color:var(--ink);text-decoration:none;display:inline-flex;align-items:center;min-height:44px}
+.brand span{color:var(--blue-deep)}
+.nav{margin-left:auto;display:flex;align-items:center;gap:4px}
+.nav a{color:var(--ink);text-decoration:none;font-size:15px;font-weight:500;padding:10px 12px;border-radius:10px;transition:background .15s}
+.nav a:hover{background:var(--soft)}
+.nav a:active{background:var(--border)}
+.nav a.btn-primary{color:#fff;margin-left:8px}
+.nav a.btn-primary:hover{background:var(--blue-deeper)}
+.menu-btn{display:none;margin-left:auto;min-width:44px;min-height:44px;border:1px solid var(--border);background:#fff;border-radius:var(--r-sm);font:500 15px var(--f);color:var(--ink);padding:0 14px}
+.menu-btn:hover{background:var(--soft)}
+
+/* ---------- Buttons ---------- */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:8px;min-height:48px;padding:0 20px;border-radius:var(--r-sm);font:600 15px/1 var(--f);text-decoration:none;border:1px solid transparent;transition:background .15s,border-color .15s,transform .1s}
+.btn:active{transform:translateY(1px)}
+.btn-primary{background:var(--blue-deep);color:#fff}
+.btn-primary:hover{background:var(--blue-deeper)}
+.btn-primary:disabled{background:#8EA9D3;color:#fff;transform:none}
+.btn-secondary{background:#fff;color:var(--ink);border-color:var(--border)}
+.btn-secondary:hover{border-color:#C9D3DE;background:var(--soft)}
+.btn-sm{min-height:44px;padding:0 16px;font-size:14px}
+
+/* ---------- Shared card ("satu pertanyaan per card") ---------- */
+.q{background:var(--surface);border:1px solid var(--border);border-radius:var(--r-card);padding:22px;display:flex;flex-direction:column;gap:14px;min-width:0}
+.q-head{display:flex;align-items:flex-start;justify-content:space-between;gap:12px}
+.q h3{font-size:15px;font-weight:600;line-height:1.4;color:var(--ink)}
+.tag{flex:none;font-size:12px;font-weight:500;line-height:1;color:var(--text2);background:var(--soft);border:1px solid var(--border);padding:6px 8px;border-radius:6px;white-space:nowrap}
+.tag-strong{color:var(--ink);font-weight:600}
+.big{font-size:44px;line-height:1;font-weight:500;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.big small{font-size:16px;font-weight:500;letter-spacing:0;color:var(--text2);margin-left:6px}
+.q-note{font-size:14px;color:var(--text2);line-height:1.5}
+.q > .btn:last-child{margin-top:auto}
+
+/* target marker motif */
+.target-chip{display:inline-block;background:var(--lime);color:var(--ink);font-size:11px;font-weight:600;line-height:1;padding:4px 6px;border-radius:5px;white-space:nowrap}
+
+/* meter */
+.meter{position:relative;height:10px;border-radius:999px;background:var(--pale)}
+.meter > i{position:absolute;inset:0 auto 0 0;border-radius:999px;background:var(--blue);width:var(--v)}
+.meter .tick{position:absolute;top:-5px;bottom:-5px;width:0;border-left:2px dashed var(--ink);left:var(--t)}
+.meter-legend{display:flex;justify-content:space-between;gap:8px;font-size:13px;color:var(--text2);margin-top:8px}
+
+/* bars (vertical) */
+.vbars{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:8px;align-items:end;height:132px;position:relative;padding-top:18px}
+.vbars .b{position:relative;height:100%;display:flex;align-items:flex-end}
+.vbars .b i{display:block;width:100%;height:var(--h);background:var(--bar);border-radius:6px 6px 3px 3px;transform-origin:bottom}
+.vbars .b.hi i{background:var(--blue-deep)}
+.vbars .b em{position:absolute;left:50%;transform:translateX(-50%);bottom:calc(var(--h) + 4px);font-style:normal;font-size:12px;font-weight:600;color:var(--blue-deep)}
+.vbars .tline{position:absolute;left:0;right:0;border-top:2px dashed var(--ink);bottom:var(--t);z-index:1;pointer-events:none}
+.vbars .tline .target-chip{position:absolute;right:0;top:-22px}
+.vlabels{display:grid;grid-template-columns:repeat(var(--n),1fr);gap:8px;margin-top:8px;font-size:12px;color:var(--text2);text-align:center}
+
+/* bars (horizontal) */
+.hbars{display:grid;gap:10px}
+.hbar{display:grid;grid-template-columns:64px 1fr 28px;align-items:center;gap:10px;font-size:13px}
+.hbar span{color:var(--text2)}
+.hbar b{font-weight:600;text-align:right;font-variant-numeric:tabular-nums}
+.hbar .tr{height:10px;border-radius:999px;background:#EEF2F6;overflow:hidden}
+.hbar .tr i{display:block;height:100%;width:var(--v);background:#7FB6EC;border-radius:999px;transform-origin:left}
+.hbar.hi .tr i{background:var(--blue-deep)}
+
+/* list rows */
+.rows{display:grid;gap:0}
+.rows li{display:flex;justify-content:space-between;align-items:baseline;gap:12px;padding:9px 0;border-top:1px solid var(--border);font-size:14px}
+.rows li:first-child{border-top:0;padding-top:0}
+.rows li span{color:var(--text2)}
+.rows li b{font-weight:600;text-align:right}
+.rows li .sub{display:block;font-size:12px;color:var(--text2);font-weight:400}
+
+/* reveal for charts (only when JS on and motion allowed) */
+@media (prefers-reduced-motion:no-preference){
+  .js .grow .vbars .b i{transform:scaleY(0);transition:transform .7s cubic-bezier(.2,.7,.2,1)}
+  .js .grow .hbar .tr i,.js .grow .meter > i{transform:scaleX(0);transform-origin:left;transition:transform .8s cubic-bezier(.2,.7,.2,1)}
+  .js .grow.in .vbars .b i{transform:scaleY(1)}
+  .js .grow.in .hbar .tr i,.js .grow.in .meter > i{transform:scaleX(1)}
+  .js .grow .vbars .b:nth-child(2) i{transition-delay:.04s}.js .grow .vbars .b:nth-child(3) i{transition-delay:.08s}
+  .js .grow .vbars .b:nth-child(4) i{transition-delay:.12s}.js .grow .vbars .b:nth-child(5) i{transition-delay:.16s}
+  .js .grow .vbars .b:nth-child(6) i{transition-delay:.2s}.js .grow .vbars .b:nth-child(7) i{transition-delay:.24s}
+}
+
+/* ---------- Hero ---------- */
+.hero{padding:56px 0 72px}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.05fr);gap:56px;align-items:center}
+.hero h1{font-size:clamp(36px,4.6vw,58px);line-height:1.06;font-weight:700;letter-spacing:-.025em;max-width:13ch}
+.hero-lead{margin-top:20px;font-size:18px;line-height:1.6;color:var(--text2);max-width:46ch}
+.hero-lead strong{color:var(--ink);font-weight:600}
+.hero-cta{display:flex;flex-wrap:wrap;gap:12px;margin-top:32px}
+.hero-split{margin-top:36px;display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:var(--r-sm);max-width:480px}
+.hero-split div{padding:14px 16px}
+.hero-split div + div{border-left:1px solid var(--border)}
+.hero-split dt{font-size:13px;color:var(--text2)}
+.hero-split dd{font-size:15px;font-weight:500;margin-top:4px;line-height:1.45}
+
+.panel{background:var(--pale);border-radius:28px;padding:20px}
+.panel-top{display:flex;align-items:center;justify-content:space-between;gap:12px;padding:2px 4px 16px}
+.panel-top p{font-size:14px;font-weight:600}
+.panel-top p span{display:block;font-weight:400;color:var(--text2);font-size:13px}
+.panel-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.panel-grid .wide{grid-column:1/-1}
+.panel .q{box-shadow:0 1px 2px rgba(17,24,39,.04),0 8px 24px -12px rgba(7,87,201,.18)}
+.shift-list li{display:grid;grid-template-columns:auto 1fr auto;align-items:center;gap:10px;font-size:14px;padding:7px 0;border-top:1px solid var(--border)}
+.shift-list li:first-child{border-top:0;padding-top:0}
+.dots{display:flex;gap:3px;flex-wrap:wrap}
+.dots i{width:7px;height:7px;border-radius:2px;background:var(--blue)}
+.shift-list b{font-weight:600;font-variant-numeric:tabular-nums}
+
+/* ---------- Sections ---------- */
+.sec{padding:88px 0}
+.sec-head{max-width:640px;margin-bottom:36px}
+.sec-head h2,.split-head h2{font-size:clamp(28px,3.2vw,40px);line-height:1.15;font-weight:700;letter-spacing:-.02em}
+.sec-head p,.split-head p{margin-top:14px;color:var(--text2);font-size:17px;line-height:1.6}
+.grid-3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:16px}
+
+/* program */
+.program{padding-top:24px}
+.prog-intro{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:56px;align-items:start;margin-bottom:36px}
+.prog-intro p{color:var(--text2);font-size:17px;line-height:1.65}
+.prog-intro p strong{color:var(--ink);font-weight:600}
+.task-list li{display:flex;justify-content:space-between;align-items:baseline;gap:10px;font-size:14px;padding:8px 0;border-top:1px solid var(--border)}
+.task-list li:first-child{border-top:0;padding-top:0}
+.task-list span{min-width:0}
+.task-list small{display:block;font-size:12px;color:var(--text2);overflow-wrap:anywhere}
+.task-list b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.roles li{display:grid;grid-template-columns:36px 1fr;gap:10px;padding:9px 0;border-top:1px solid var(--border);font-size:14px}
+.roles li:first-child{border-top:0;padding-top:0}
+.roles .ab{width:36px;height:28px;border-radius:8px;background:var(--pale);color:var(--blue-deep);font-size:11px;font-weight:700;display:grid;place-items:center}
+.roles b{font-weight:600;display:block}
+.roles span{color:var(--text2);font-size:13px}
+
+/* value */
+.value-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:48px;align-items:start}
+.split-head{position:sticky;top:100px}
+.value-cards{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:16px}
+.checks li{display:grid;grid-template-columns:18px 1fr;gap:10px;align-items:start;padding:8px 0;border-top:1px solid var(--border);font-size:14px}
+.checks li:first-child{border-top:0;padding-top:0}
+.checks svg{margin-top:3px}
+.calc{display:grid;gap:0;font-size:14px}
+.calc div{display:flex;justify-content:space-between;gap:12px;padding:8px 0;border-top:1px solid var(--border)}
+.calc div:first-child{border-top:0;padding-top:0}
+.calc dt{color:var(--text2)}
+.calc dd{font-weight:600;font-variant-numeric:tabular-nums;text-align:right}
+.calc .total{border-top:2px solid var(--ink)}
+.calc .total dt{color:var(--ink);font-weight:600}
+.formula{display:flex;flex-wrap:wrap;align-items:center;gap:8px;font-size:14px}
+.formula span{background:var(--soft);border:1px solid var(--border);border-radius:var(--r-xs);padding:8px 10px;font-weight:500}
+.formula .op{background:none;border:0;padding:0;color:var(--text2)}
+.formula .ph{border-style:dashed;color:var(--text2)}
+
+/* how it works: day rail */
+.band{background:var(--pale)}
+.rail{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:12px;position:relative;counter-reset:none}
+.rail::before{content:"";position:absolute;left:12px;right:12px;top:15px;height:2px;background:#BFDDF8}
+.stop{position:relative;padding-top:40px;min-width:0}
+.stop::before{content:"";position:absolute;top:9px;left:0;width:14px;height:14px;border-radius:50%;background:#fff;border:3px solid var(--blue-deep)}
+.stop .time{position:absolute;top:6px;left:24px;font-size:13px;font-weight:600;color:var(--blue-deep);font-variant-numeric:tabular-nums;background:var(--pale);padding:0 6px}
+.stop .q{height:100%}
+.stop .big{font-size:34px}
+.mini-rows li{display:flex;justify-content:space-between;gap:8px;font-size:12px;padding:6px 0;border-top:1px solid var(--border);color:var(--text2)}
+.mini-rows li:first-child{border-top:0;padding-top:0}
+.mini-rows li b{color:var(--ink);font-weight:600;overflow-wrap:anywhere;text-align:right}
+.status{display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:600;padding:5px 8px;border-radius:6px;background:var(--soft);border:1px solid var(--border);color:var(--ink)}
+.status.warn{background:#FFF7E6;border-color:#F1D9A6;color:#6B4A00}
+.status-stack{display:grid;gap:8px;justify-items:start}
+
+/* benefits */
+.benefit-top{display:flex;justify-content:space-between;align-items:end;gap:32px;margin-bottom:36px}
+.benefit-top .sec-head{margin-bottom:0}
+.benefit-top .aside{font-size:14px;color:var(--text2);max-width:300px}
+.spark{width:100%;height:84px;overflow:visible}
+.tasks-meter li{padding:9px 0;border-top:1px solid var(--border)}
+.tasks-meter li:first-child{border-top:0;padding-top:0}
+.tasks-meter .lbl{display:flex;justify-content:space-between;gap:8px;font-size:13px;margin-bottom:7px}
+.tasks-meter .lbl b{font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap}
+.tasks-meter .lbl .lag{color:#8A1C1C}
+.access li{display:grid;grid-template-columns:1fr auto;gap:10px;align-items:center;font-size:14px;padding:8px 0;border-top:1px solid var(--border)}
+.access li:first-child{border-top:0;padding-top:0}
+.access span{color:var(--text2);font-size:13px}
+.access .scope{font-size:12px;font-weight:600;padding:5px 8px;border-radius:6px;background:var(--soft);border:1px solid var(--border);white-space:nowrap}
+.access .scope.me{background:var(--pale);border-color:#CBE5F8;color:var(--blue-deeper)}
+.tl{display:grid;grid-template-columns:1fr 1fr;gap:0;border:1px solid var(--border);border-radius:var(--r-sm);overflow:hidden;font-size:13px}
+.tl div{padding:12px}
+.tl div + div{border-left:1px solid var(--border);background:var(--pale)}
+.tl span{color:var(--text2);display:block}
+.tl b{display:block;font-size:20px;font-weight:500;margin-top:4px;font-variant-numeric:tabular-nums}
+
+/* process */
+.proc-grid{display:grid;grid-template-columns:minmax(0,1.7fr) minmax(0,1fr);gap:16px;align-items:start}
+.gantt{display:grid;gap:0;margin-top:6px}
+.g-scale{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px;font-size:12px;color:var(--text2);padding-bottom:8px}
+.g-scale .ticks{display:flex;justify-content:space-between}
+.g-row{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.4fr);gap:16px;align-items:center;padding:14px 0;border-top:1px solid var(--border)}
+.g-row h3{font-size:15px;font-weight:600;line-height:1.35}
+.g-row p{font-size:13px;color:var(--text2);margin-top:3px;line-height:1.45}
+.g-track{position:relative;height:28px;border-radius:8px;background:var(--soft)}
+.g-track i{position:absolute;top:0;bottom:0;left:calc((var(--s) - 1) / 21 * 100%);width:calc((var(--e) - var(--s) + 1) / 21 * 100%);background:var(--bar);border-radius:8px;display:flex;align-items:center;padding:0 8px;font-style:normal;font-size:12px;font-weight:600;color:var(--blue-deeper);white-space:nowrap;min-width:max-content}
+.g-row.last .g-track i{background:var(--blue-deep);color:#fff;left:auto;right:0}
+.g-row.last .g-track::after{content:"";position:absolute;right:0;top:-6px;bottom:-6px;border-right:2px dashed var(--ink)}
+.g-end{display:flex;justify-content:flex-end;padding-top:10px}
+
+/* FAQ */
+.faq-grid{display:grid;grid-template-columns:minmax(0,.8fr) minmax(0,1.6fr);gap:48px;align-items:start}
+.faq-list{border-top:1px solid var(--border)}
+.faq-list details{border-bottom:1px solid var(--border)}
+.faq-list summary{list-style:none;display:flex;justify-content:space-between;align-items:center;gap:16px;padding:20px 4px;font-size:17px;font-weight:600;line-height:1.4;min-height:44px;border-radius:8px}
+.faq-list summary::-webkit-details-marker{display:none}
+.faq-list summary:hover{color:var(--blue-deep)}
+.faq-list summary .pm{flex:none;width:28px;height:28px;border-radius:8px;border:1px solid var(--border);display:grid;place-items:center;transition:transform .2s,background .15s}
+.faq-list summary:hover .pm{background:var(--soft)}
+.faq-list details[open] summary .pm{transform:rotate(45deg)}
+.faq-body{padding:0 4px 22px;color:var(--text2);font-size:16px;line-height:1.65;max-width:62ch}
+.faq-body .tag{margin-left:6px;vertical-align:1px}
+.faq-body strong{color:var(--ink);font-weight:600}
+
+/* CTA + form */
+.cta{background:var(--blue-deep);color:#fff}
+.cta :focus-visible{outline-color:#fff}
+.cta .form-card :focus-visible{outline-color:var(--blue-deep)}
+.cta-grid{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.15fr);gap:56px;align-items:start}
+.cta h2{font-size:clamp(28px,3.2vw,40px);line-height:1.15;font-weight:700;letter-spacing:-.02em}
+.cta-lead{margin-top:14px;font-size:17px;line-height:1.6;color:#E3EEFC;max-width:44ch}
+.after{margin-top:32px;background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.22);border-radius:var(--r-card);padding:22px}
+.after-head{display:flex;justify-content:space-between;align-items:flex-start;gap:12px}
+.after h3{font-size:15px;font-weight:600}
+.after .tag{background:rgba(255,255,255,.12);border-color:rgba(255,255,255,.3);color:#fff}
+.after .big{margin:12px 0 16px}
+.after .big small{color:#E3EEFC}
+.after ol li{display:grid;grid-template-columns:72px 1fr;gap:12px;padding:10px 0;border-top:1px solid rgba(255,255,255,.2);font-size:14px}
+.after ol li:first-child{border-top:0}
+.after ol b{font-weight:600;font-variant-numeric:tabular-nums}
+.after ol span{color:#E3EEFC}
+
+.form-card{background:#fff;color:var(--ink);border-radius:var(--r-card);padding:28px}
+.form-card h3{font-size:20px;font-weight:600}
+.form-card > p{font-size:14px;color:var(--text2);margin-top:6px}
+.fgrid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-top:22px}
+.field{display:grid;gap:6px;min-width:0}
+.field.full{grid-column:1/-1}
+.field label,.field legend{font-size:14px;font-weight:500}
+.field .opt{font-weight:400;color:var(--text2)}
+.field input[type=text],.field input[type=email],.field input[type=tel],.field select,.field textarea{width:100%;min-height:48px;border:1px solid #D5DDE6;border-radius:var(--r-sm);padding:12px 14px;font:400 15px var(--f);color:var(--ink);background:#fff;transition:border-color .15s,box-shadow .15s}
+.field textarea{min-height:96px;resize:vertical}
+.field select{appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5l5 5 5-5' fill='none' stroke='%23111827' stroke-width='1.6' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 14px center;padding-right:40px}
+.field input:hover,.field select:hover,.field textarea:hover{border-color:#B7C3D0}
+.field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--blue-deep);box-shadow:0 0 0 3px rgba(7,87,201,.2)}
+.field [aria-invalid=true]{border-color:#B42318}
+.field .err{font-size:13px;color:#B42318;min-height:0}
+.field .hint{font-size:13px;color:var(--text2)}
+fieldset.field{border:0;padding:0;margin:0}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:6px}
+.chip{position:relative}
+.chip input{position:absolute;opacity:0;width:1px;height:1px}
+.chip label{display:inline-flex;align-items:center;gap:8px;min-height:44px;padding:0 14px;border:1px solid #D5DDE6;border-radius:var(--r-sm);font-size:14px;font-weight:500;transition:background .15s,border-color .15s}
+.chip label:hover{background:var(--soft)}
+.chip label::before{content:"";width:16px;height:16px;border-radius:4px;border:1.5px solid #8794A6;background:#fff;flex:none}
+.chip input:checked + label{border-color:var(--blue-deep);background:var(--pale)}
+.chip input:checked + label::before{background:var(--blue-deep) url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='8' viewBox='0 0 10 8'%3E%3Cpath d='M1 4l2.6 2.6L9 1' fill='none' stroke='%23fff' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E") center no-repeat;border-color:var(--blue-deep)}
+.chip input:focus-visible + label{outline:3px solid var(--blue-deep);outline-offset:2px}
+.form-foot{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:12px;margin-top:22px}
+.form-foot p{font-size:13px;color:var(--text2);max-width:34ch}
+.alert{display:none;margin-top:16px;padding:12px 14px;border-radius:var(--r-sm);font-size:14px;line-height:1.5}
+.alert.show{display:block}
+.alert.error{background:#FEF3F2;border:1px solid #F5C2BD;color:#7A1C14}
+.spinner{width:16px;height:16px;border-radius:50%;border:2px solid rgba(255,255,255,.45);border-top-color:#fff;display:none}
+.is-loading .spinner{display:inline-block;animation:spin .8s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+@media (prefers-reduced-motion:reduce){.is-loading .spinner{animation:none}}
+.success{display:none}
+.success.show{display:block}
+.success h3{font-size:20px;font-weight:600;margin-top:12px}
+.success p{font-size:15px;color:var(--text2);margin-top:8px;line-height:1.6}
+.success dl{margin-top:18px}
+.success .proto{margin-top:16px;font-size:13px;padding:10px 12px;border-radius:var(--r-xs);background:var(--soft);border:1px solid var(--border);color:var(--text2)}
+.success .btn{margin-top:20px}
+
+/* footer */
+.foot{padding:40px 0 48px;border-top:1px solid var(--border)}
+.foot-row{display:flex;flex-wrap:wrap;justify-content:space-between;gap:24px;align-items:flex-start}
+.foot p{font-size:14px;color:var(--text2);margin-top:6px;max-width:52ch}
+.foot nav ul{display:flex;flex-wrap:wrap;gap:4px 8px}
+.foot nav a{display:inline-flex;align-items:center;min-height:44px;padding:0 8px;font-size:14px;color:var(--ink);text-decoration:none;border-radius:8px}
+.foot nav a:hover{background:var(--soft)}
+.foot-note{margin-top:24px;padding-top:20px;border-top:1px solid var(--border);display:flex;flex-wrap:wrap;justify-content:space-between;gap:12px;font-size:13px;color:var(--text2)}
+
+/* ---------- Responsive ---------- */
+@media (max-width:1080px){
+  .rail{grid-template-columns:repeat(3,minmax(0,1fr));row-gap:16px}
+  .rail::before{display:none}
+  .stop{padding-top:34px}
+  .stop::before{top:6px}
+  .stop .time{top:3px}
+}
+@media (max-width:960px){
+  .hero-grid,.prog-intro,.value-grid,.faq-grid,.cta-grid,.proc-grid{grid-template-columns:1fr;gap:32px}
+  .split-head{position:static}
+  .grid-3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .benefit-top{flex-direction:column;align-items:flex-start;gap:12px}
+  .hero{padding:32px 0 56px}
+  .hero h1{max-width:16ch}
+}
+@media (max-width:860px){
+  .menu-btn{display:inline-flex;align-items:center}
+  .nav{display:none;position:absolute;top:68px;left:0;right:0;flex-direction:column;align-items:stretch;gap:0;background:#fff;border-bottom:1px solid var(--border);padding:8px 16px 16px}
+  .nav.open{display:flex}
+  .nav a{padding:14px 12px;font-size:16px}
+  .nav .btn{margin-top:8px}
+  .site-head .head-cta{display:none}
+}
+@media (max-width:640px){
+  .wrap{padding:0 18px}
+  .sec{padding:64px 0}
+  .grid-3,.value-cards,.panel-grid{grid-template-columns:1fr}
+  .rail{grid-template-columns:1fr;row-gap:24px}
+  .form-foot .btn{width:100%}
+  .rail::before{display:block;left:6px;right:auto;top:12px;bottom:12px;width:2px;height:auto}
+  .stop{padding:0 0 0 30px}
+  .stop::before{top:4px}
+  .stop .time{position:static;display:inline-block;padding:0 0 8px;background:none}
+  .stop .q{height:auto}
+  .panel{padding:14px;border-radius:22px}
+  .big{font-size:38px}
+  .fgrid{grid-template-columns:1fr}
+  .form-card{padding:20px}
+  .hero-split{grid-template-columns:1fr}
+  .hero-split div + div{border-left:0;border-top:1px solid var(--border)}
+  .g-row,.g-scale{grid-template-columns:1fr;gap:10px}
+  .g-scale .lbl{display:none}
+  .g-scale{order:0}
+  .after ol li{grid-template-columns:64px 1fr}
+  .hero-cta .btn{flex:1 1 100%}
+}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Langsung ke konten</a>
+
+<header class="site-head" id="top">
+  <div class="wrap head-row">
+    <a class="brand" href="#top" aria-label="DataVerge, kembali ke atas">Data<span>Verge</span></a>
+    <button class="menu-btn" type="button" aria-expanded="false" aria-controls="nav">Menu</button>
+    <nav class="nav" id="nav" aria-label="Navigasi utama">
+      <a href="#program">Program</a>
+      <a href="#cara-kerja">Cara kerja</a>
+      <a href="#manfaat">Manfaat</a>
+      <a href="#proses">Proses</a>
+      <a href="#faq">FAQ</a>
+      <a class="btn btn-primary btn-sm" href="#daftar">Ajukan kemitraan</a>
+    </nav>
+  </div>
+</header>
+
+<main id="main">
+
+<!-- ============ HERO ============ -->
+<section class="hero" aria-labelledby="hero-title">
+  <div class="wrap hero-grid">
+    <div>
+      <h1 id="hero-title">Jadikan bisnis Anda cabang perekaman DataVerge.</h1>
+      <p class="hero-lead">Tim Anda merekam video aktivitas sehari-hari sesuai brief task. <strong>Setiap jam video tercatat per DCO, per task, dan per shift</strong> di DCOTrack, jadi Anda dan DataVerge membaca angka yang sama.</p>
+      <div class="hero-cta">
+        <a class="btn btn-primary" href="#daftar">Ajukan kemitraan cabang</a>
+        <a class="btn btn-secondary" href="#cara-kerja">Lihat alur satu shift</a>
+      </div>
+      <dl class="hero-split">
+        <div><dt>Mitra menyiapkan</dt><dd>Lokasi, tim DCO, supervisor</dd></div>
+        <div><dt>DataVerge menyiapkan</dt><dd>Task, target, device, DCOTrack</dd></div>
+      </dl>
+    </div>
+
+    <div class="panel grow" aria-label="Contoh tampilan dashboard cabang mitra di DCOTrack">
+      <div class="panel-top">
+        <p>Cabang mitra, minggu ini<span>Contoh tampilan DCOTrack</span></p>
+        <span class="tag">Data contoh</span>
+      </div>
+      <div class="panel-grid">
+        <article class="q wide">
+          <div class="q-head"><h3>Berapa jam video terekam minggu ini?</h3></div>
+          <p class="big num">312<small>jam video</small></p>
+          <div class="q-vis">
+            <div class="vbars" style="--n:7" role="img" aria-label="Jam video per hari. Senin 46, Selasa 51, Rabu 43, Kamis 49, Jumat 52 tertinggi, Sabtu 41, Minggu 30. Target harian 48 jam.">
+              <div class="tline" style="--t:calc(48 / 60 * (100% - 18px))"><span class="target-chip">target 48</span></div>
+              <div class="b" style="--h:calc(46/60*100%)"><i></i></div>
+              <div class="b" style="--h:calc(51/60*100%)"><i></i></div>
+              <div class="b" style="--h:calc(43/60*100%)"><i></i></div>
+              <div class="b" style="--h:calc(49/60*100%)"><i></i></div>
+              <div class="b hi" style="--h:calc(52/60*100%)"><i></i><em>52</em></div>
+              <div class="b" style="--h:calc(41/60*100%)"><i></i></div>
+              <div class="b" style="--h:calc(30/60*100%)"><i></i></div>
+            </div>
+            <div class="vlabels" style="--n:7" aria-hidden="true"><span>Sen</span><span>Sel</span><span>Rab</span><span>Kam</span><span>Jum</span><span>Sab</span><span>Min</span></div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="q-head"><h3>Sudah sampai mana target bulan ini?</h3></div>
+          <p class="big num">74<small>%</small></p>
+          <div class="q-vis">
+            <div class="meter" style="--v:74%;--t:77%" role="img" aria-label="Realisasi 1.065 dari target 1.440 jam, 74 persen. Penanda target berjalan di 77 persen."><i></i><span class="tick"></span></div>
+            <div class="meter-legend"><span class="num">1.065 / 1.440 jam</span><span>hari ke-23</span></div>
+          </div>
+        </article>
+        <article class="q">
+          <div class="q-head"><h3>Berapa DCO bekerja hari ini?</h3></div>
+          <p class="big num">18<small>DCO</small></p>
+          <ul class="shift-list q-vis">
+            <li><span>Pagi</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i></span><b>8</b></li>
+            <li><span>Siang</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i><i></i><i></i></span><b>6</b></li>
+            <li><span>Malam</span><span class="dots" aria-hidden="true"><i></i><i></i><i></i><i></i></span><b>4</b></li>
+          </ul>
+        </article>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROGRAM (brand intro) ============ -->
+<section class="sec program" id="program" aria-labelledby="program-title">
+  <div class="wrap">
+    <div class="prog-intro">
+      <div class="sec-head" style="margin-bottom:0">
+        <h2 id="program-title">Apa yang dikerjakan cabang mitra?</h2>
+      </div>
+      <p>DataVerge mengumpulkan video aktivitas sehari-hari yang direkam mengikuti brief task: melipat selimut, menata koper, menyiram tanaman. <strong>Cabang mitra menjalankan perekamannya.</strong> DataVerge menetapkan task dan targetnya, lalu mencatat hasilnya di DCOTrack.</p>
+    </div>
+
+    <div class="grid-3 grow">
+      <article class="q">
+        <div class="q-head"><h3>Task apa yang direkam?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">7<small>task aktif</small></p>
+        <ul class="task-list q-vis">
+          <li><span>Melipat dan memasang selimut<small>FoldAndReapplyFabric-Blanket</small></span><b>40 jam</b></li>
+          <li><span>Menata barang ke dalam koper<small>LoadingItems-Suitcase</small></span><b>36 jam</b></li>
+          <li><span>Menyapu lantai ruang tamu<small>SweeptheFloor-LivingRoom</small></span><b>32 jam</b></li>
+          <li><span>4 task lainnya<small>Sarung bantal, tanaman, dekorasi meja, bongkar koper</small></span><b>92 jam</b></li>
+        </ul>
+        <p class="q-note">Target jam per task, per bulan.</p>
+      </article>
+
+      <article class="q">
+        <div class="q-head"><h3>Siapa saja yang bekerja di cabang?</h3></div>
+        <p class="big num">3<small>peran</small></p>
+        <ul class="roles q-vis">
+          <li><span class="ab" aria-hidden="true">DCO</span><div><b>Digital Content Officer</b><span>Merekam task dengan device terdaftar.</span></div></li>
+          <li><span class="ab" aria-hidden="true">SPV</span><div><b>Supervisor</b><span>Menginput laporan tiap DCO per shift.</span></div></li>
+          <li><span class="ab" aria-hidden="true">ADM</span><div><b>Admin Cabang</b><span>Memantau data dan menyetujui koreksi.</span></div></li>
+        </ul>
+      </article>
+
+      <article class="q">
+        <div class="q-head"><h3>Bagaimana hasil kerja dihitung?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">3,2<small>jam video per DCO</small></p>
+        <div class="q-vis">
+          <div class="meter" style="--v:40%;--t:40%" role="img" aria-label="3,2 jam video dari durasi efektif shift 8 jam."><i></i></div>
+          <div class="meter-legend"><span>Jam video</span><span class="num">dari 8 jam efektif shift</span></div>
+        </div>
+        <p class="q-note">Satuannya jam video, dibandingkan dengan durasi efektif shift dan target task.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ VALUE ============ -->
+<section class="sec" id="nilai" aria-labelledby="nilai-title" style="padding-top:24px">
+  <div class="wrap value-grid">
+    <div class="split-head">
+      <h2 id="nilai-title">Pembagian kerja yang jelas sejak hari pertama.</h2>
+      <p>Mitra fokus menjalankan tim di lokasi. Brief, target, dan pencatatan sudah disiapkan, jadi tidak ada yang perlu dirakit dari nol.</p>
+    </div>
+    <div class="value-cards grow">
+      <article class="q">
+        <div class="q-head"><h3>Apa yang disiapkan mitra?</h3></div>
+        <p class="big num">4<small>hal</small></p>
+        <ul class="checks q-vis">
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x=".75" y=".75" width="16.5" height="16.5" rx="4.5" fill="none" stroke="#111827" stroke-width="1.5"/></svg><span>Lokasi perekaman yang mirip ruang rumah</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x=".75" y=".75" width="16.5" height="16.5" rx="4.5" fill="none" stroke="#111827" stroke-width="1.5"/></svg><span>Tim DCO</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x=".75" y=".75" width="16.5" height="16.5" rx="4.5" fill="none" stroke="#111827" stroke-width="1.5"/></svg><span>Supervisor untuk setiap shift</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x=".75" y=".75" width="16.5" height="16.5" rx="4.5" fill="none" stroke="#111827" stroke-width="1.5"/></svg><span>Jadwal shift yang bisa dijalankan</span></li>
+        </ul>
+      </article>
+      <article class="q">
+        <div class="q-head"><h3>Apa yang disiapkan DataVerge?</h3></div>
+        <p class="big num">5<small>hal</small></p>
+        <ul class="checks q-vis">
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" rx="5" fill="#0757C9"/><path d="M5 9.2l2.6 2.6L13 6.4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Brief dan daftar task</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" rx="5" fill="#0757C9"/><path d="M5 9.2l2.6 2.6L13 6.4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Target jam per task</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" rx="5" fill="#0757C9"/><path d="M5 9.2l2.6 2.6L13 6.4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Device perekaman terdaftar</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" rx="5" fill="#0757C9"/><path d="M5 9.2l2.6 2.6L13 6.4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Akun DCOTrack untuk SPV dan Admin</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect width="18" height="18" rx="5" fill="#0757C9"/><path d="M5 9.2l2.6 2.6L13 6.4" fill="none" stroke="#fff" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"/></svg><span>Dashboard dan rekap cabang</span></li>
+        </ul>
+      </article>
+      <article class="q">
+        <div class="q-head"><h3>Berapa jam video yang bisa dihasilkan per bulan?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">1.440<small>jam</small></p>
+        <dl class="calc q-vis">
+          <div><dt>DCO aktif</dt><dd>18</dd></div>
+          <div><dt>Jam video per DCO per hari</dt><dd>× 3,2</dd></div>
+          <div><dt>Hari kerja per bulan</dt><dd>× 25</dd></div>
+          <div class="total"><dt>Potensi per bulan</dt><dd>1.440 jam</dd></div>
+        </dl>
+      </article>
+      <article class="q">
+        <div class="q-head"><h3>Bagaimana nilai kemitraan dihitung?</h3><span class="tag tag-strong">Perlu konfirmasi</span></div>
+        <p class="big num">1<small>satuan: jam video</small></p>
+        <div class="formula q-vis" role="img" aria-label="Jam video tercatat sesuai brief, dikali tarif per jam yang ditetapkan di perjanjian.">
+          <span>Jam video sesuai brief</span><span class="op" aria-hidden="true">×</span><span class="ph">Tarif per jam</span>
+        </div>
+        <p class="q-note">Tarif dan skema pembayaran diisi tim DataVerge sebelum halaman ini dirilis.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ HOW IT WORKS ============ -->
+<section class="sec band" id="cara-kerja" aria-labelledby="cara-title">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="cara-title">Satu shift pagi di cabang mitra.</h2>
+      <p>Alur yang sama berulang di shift siang dan malam. Contoh di bawah memakai shift pagi dengan 8 jam kerja efektif.</p>
+    </div>
+    <ol class="rail grow">
+      <li class="stop">
+        <span class="time">07.00</span>
+        <article class="q">
+          <div class="q-head"><h3>Siapa merekam task apa?</h3></div>
+          <p class="big num">8<small>DCO</small></p>
+          <ul class="mini-rows q-vis" aria-label="Contoh pembagian task">
+            <li><span>Andi</span><b>Selimut · DV-014</b></li>
+            <li><span>Dewi</span><b>Koper · DV-022</b></li>
+            <li><span>Rizky</span><b>Lantai · DV-031</b></li>
+          </ul>
+          <p class="q-note">Supervisor membagi task dan device.</p>
+        </article>
+      </li>
+      <li class="stop">
+        <span class="time">07.15–14.45</span>
+        <article class="q">
+          <div class="q-head"><h3>Berapa jam terekam per DCO?</h3></div>
+          <p class="big num">3,2<small>jam</small></p>
+          <div class="q-vis">
+            <div class="meter" style="--v:40%;--t:40%" role="img" aria-label="3,2 dari 8 jam efektif"><i></i></div>
+            <div class="meter-legend"><span>dari 8 jam</span><span>data contoh</span></div>
+          </div>
+        </article>
+      </li>
+      <li class="stop">
+        <span class="time">15.00</span>
+        <article class="q">
+          <div class="q-head"><h3>Laporan apa yang diinput?</h3></div>
+          <p class="big num">8<small>laporan</small></p>
+          <ul class="mini-rows q-vis">
+            <li><span>Per DCO</span><b>baris task</b></li>
+            <li><span>Per baris</span><b>device, durasi</b></li>
+          </ul>
+          <p class="q-note">Supervisor mengisi di web app DCOTrack.</p>
+        </article>
+      </li>
+      <li class="stop">
+        <span class="time">15.30</span>
+        <article class="q">
+          <div class="q-head"><h3>Apa yang diperiksa?</h3></div>
+          <p class="big num">1<small>tanda</small></p>
+          <div class="status-stack q-vis">
+            <span class="status">Masih bisa diedit</span>
+            <span class="status warn">Melebihi durasi shift</span>
+          </div>
+          <p class="q-note">Koreksi diajukan ke Admin Cabang.</p>
+        </article>
+      </li>
+      <li class="stop">
+        <span class="time">Akhir hari</span>
+        <article class="q">
+          <div class="q-head"><h3>Sudah dekat target?</h3></div>
+          <p class="big num">74<small>%</small></p>
+          <div class="q-vis">
+            <div class="meter" style="--v:74%;--t:77%" role="img" aria-label="74 persen, penanda target berjalan 77 persen"><i></i><span class="tick"></span></div>
+            <div class="meter-legend"><span>realisasi</span><span><span class="target-chip">target</span></span></div>
+          </div>
+        </article>
+      </li>
+    </ol>
+  </div>
+</section>
+
+<!-- ============ BENEFITS ============ -->
+<section class="sec" id="manfaat" aria-labelledby="manfaat-title">
+  <div class="wrap">
+    <div class="benefit-top">
+      <div class="sec-head">
+        <h2 id="manfaat-title">Yang mitra lihat setiap hari di DCOTrack.</h2>
+        <p>Pertanyaan yang biasa muncul saat menjalankan tim perekaman, dan angka yang menjawabnya.</p>
+      </div>
+      <p class="aside">Semua angka di bagian ini adalah data contoh dari prototipe DCOTrack.</p>
+    </div>
+
+    <div class="grid-3 grow">
+      <article class="q">
+        <div class="q-head"><h3>Apakah cabang mencapai target setiap hari?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">92<small>% rata-rata 14 hari</small></p>
+        <div class="q-vis">
+          <svg class="spark" viewBox="0 0 280 84" preserveAspectRatio="none" role="img" aria-label="Pencapaian target harian 14 hari terakhir, antara 78 dan 108 persen, rata-rata 92 persen.">
+            <line x1="0" y1="26" x2="280" y2="26" stroke="#111827" stroke-width="2" stroke-dasharray="5 4" vector-effect="non-scaling-stroke"/>
+            <polyline fill="none" stroke="#1677E8" stroke-width="2.5" stroke-linejoin="round" stroke-linecap="round" vector-effect="non-scaling-stroke"
+              points="0,52 21.5,44 43,58 64.6,40 86,46 107.7,36 129,62 150.8,34 172,42 193.8,20 215,38 236.9,30 258,44 280,28"/>
+            <circle cx="193.8" cy="20" r="4.5" fill="#0757C9" stroke="#fff" stroke-width="2"/>
+          </svg>
+          <div class="meter-legend"><span>14 hari lalu</span><span><span class="target-chip">target 100%</span></span></div>
+        </div>
+      </article>
+
+      <article class="q">
+        <div class="q-head"><h3>Shift mana yang paling banyak lapor?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">11<small>laporan shift pagi</small></p>
+        <div class="hbars q-vis" role="img" aria-label="Laporan per shift: Pagi 11, Siang 7, Malam 3.">
+          <div class="hbar hi"><span>Pagi</span><div class="tr"><i style="--v:100%"></i></div><b>11</b></div>
+          <div class="hbar"><span>Siang</span><div class="tr"><i style="--v:63.6%"></i></div><b>7</b></div>
+          <div class="hbar"><span>Malam</span><div class="tr"><i style="--v:27.3%"></i></div><b>3</b></div>
+        </div>
+      </article>
+
+      <article class="q">
+        <div class="q-head"><h3>Task mana yang tertinggal dari target?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">−6<small>jam, menyiram tanaman</small></p>
+        <ul class="tasks-meter q-vis">
+          <li><div class="lbl"><span>Melipat selimut</span><b>38 / 40</b></div><div class="meter" style="--v:95%;--t:100%"><i></i></div></li>
+          <li><div class="lbl"><span>Menata koper</span><b>36 / 36</b></div><div class="meter" style="--v:100%;--t:100%"><i></i></div></li>
+          <li><div class="lbl"><span>Menyiram tanaman</span><b class="lag">18 / 24</b></div><div class="meter" style="--v:75%;--t:100%"><i></i></div></li>
+        </ul>
+      </article>
+
+      <article class="q">
+        <div class="q-head"><h3>Apakah data cabang terpisah dari cabang lain?</h3></div>
+        <p class="big num">1<small>cabang per Admin</small></p>
+        <ul class="access q-vis">
+          <li><div>Admin Cabang<br><span>Mitra</span></div><b class="scope me">Cabangnya saja</b></li>
+          <li><div>Supervisor<br><span>Mitra</span></div><b class="scope">Laporannya</b></li>
+          <li><div>Super Admin<br><span>DataVerge</span></div><b class="scope">Seluruh cabang</b></li>
+        </ul>
+      </article>
+
+      <article class="q">
+        <div class="q-head"><h3>Bisakah rekap dibawa ke rapat internal?</h3></div>
+        <p class="big num">1<small>file Excel</small></p>
+        <ul class="rows q-vis">
+          <li><span>Isi file</span><b>sesuai filter aktif</b></li>
+          <li><span>Rincian</span><b>per task, per shift</b></li>
+          <li><span>Cakupan</span><b>cabang Anda</b></li>
+        </ul>
+      </article>
+
+      <article class="q">
+        <div class="q-head"><h3>Kalau target berubah, laporan lama ikut berubah?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">0<small>laporan lama berubah</small></p>
+        <div class="tl q-vis">
+          <div><span>s.d. 31 Okt</span><b>40 jam</b></div>
+          <div><span>mulai 1 Nov</span><b>48 jam</b></div>
+        </div>
+        <p class="q-note">Target tercatat dengan tanggal efektif.</p>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ PROCESS ============ -->
+<section class="sec" id="proses" aria-labelledby="proses-title" style="padding-top:16px">
+  <div class="wrap">
+    <div class="sec-head">
+      <h2 id="proses-title">Dari formulir sampai shift pertama.</h2>
+      <p>Lima tahap, dikerjakan bersama tim DataVerge. Durasi tiap tahap bergantung pada kesiapan lokasi dan tim.</p>
+    </div>
+    <div class="proc-grid">
+      <article class="q grow">
+        <div class="q-head"><h3>Berapa lama sampai shift pertama?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">21<small>hari</small></p>
+        <div class="gantt">
+          <div class="g-scale" aria-hidden="true"><span class="lbl">Tahap</span><div class="ticks"><span>H1</span><span>H7</span><span>H14</span><span>H21</span></div></div>
+          <div class="g-row">
+            <div><h3>Pengajuan dan panggilan kenalan</h3><p>Tim DataVerge menghubungi dan menjelaskan program.</p></div>
+            <div class="g-track"><i style="--s:1;--e:3">H1–3</i></div>
+          </div>
+          <div class="g-row">
+            <div><h3>Cek lokasi perekaman</h3><p>Ruang, pencahayaan, dan alur kerja tim ditinjau.</p></div>
+            <div class="g-track"><i style="--s:4;--e:7">H4–7</i></div>
+          </div>
+          <div class="g-row">
+            <div><h3>Perjanjian dan target awal</h3><p>Task, target jam, dan skema kerja sama disepakati.</p></div>
+            <div class="g-track"><i style="--s:8;--e:12">H8–12</i></div>
+          </div>
+          <div class="g-row">
+            <div><h3>Setup cabang di DCOTrack</h3><p>Akun, device, data DCO, dan jadwal shift didaftarkan.</p></div>
+            <div class="g-track"><i style="--s:13;--e:18">H13–18</i></div>
+          </div>
+          <div class="g-row last">
+            <div><h3>Uji coba shift dan laporan pertama</h3><p>Supervisor menginput laporan pertama, lalu dicek bersama.</p></div>
+            <div class="g-track"><i style="--s:19;--e:21">H19–21</i></div>
+          </div>
+          <div class="g-end"><span class="target-chip">shift pertama</span></div>
+        </div>
+      </article>
+
+      <article class="q">
+        <div class="q-head"><h3>Apa yang perlu disiapkan sebelum panggilan pertama?</h3></div>
+        <p class="big num">4<small>hal</small></p>
+        <ul class="checks q-vis">
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x=".75" y=".75" width="16.5" height="16.5" rx="4.5" fill="none" stroke="#111827" stroke-width="1.5"/></svg><span>Alamat lokasi perekaman</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x=".75" y=".75" width="16.5" height="16.5" rx="4.5" fill="none" stroke="#111827" stroke-width="1.5"/></svg><span>Foto ruang yang akan dipakai</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x=".75" y=".75" width="16.5" height="16.5" rx="4.5" fill="none" stroke="#111827" stroke-width="1.5"/></svg><span>Perkiraan jumlah DCO</span></li>
+          <li><svg width="18" height="18" viewBox="0 0 18 18" aria-hidden="true"><rect x=".75" y=".75" width="16.5" height="16.5" rx="4.5" fill="none" stroke="#111827" stroke-width="1.5"/></svg><span>Shift yang sanggup dijalankan</span></li>
+        </ul>
+        <a class="btn btn-secondary" href="#daftar">Isi formulir pengajuan</a>
+      </article>
+    </div>
+  </div>
+</section>
+
+<!-- ============ FAQ ============ -->
+<section class="sec" id="faq" aria-labelledby="faq-title" style="padding-top:16px">
+  <div class="wrap faq-grid">
+    <div class="split-head">
+      <h2 id="faq-title">Pertanyaan calon mitra.</h2>
+      <p>Jawaban bertanda <span class="tag tag-strong">Perlu konfirmasi</span> masih draf dan akan dilengkapi tim DataVerge.</p>
+    </div>
+    <div class="faq-list">
+      <details>
+        <summary>Siapa yang menginput laporan harian?<span class="pm" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#111827" stroke-width="1.6" stroke-linecap="round"/></svg></span></summary>
+        <div class="faq-body"><p>Supervisor. Setelah shift selesai, supervisor mengisi satu laporan untuk setiap DCO di web app DCOTrack. Isinya baris task, kode device, dan durasi. Jam kerja tampil otomatis setelah shift dipilih.</p></div>
+      </details>
+      <details>
+        <summary>Bagaimana kalau ada laporan yang salah input?<span class="pm" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#111827" stroke-width="1.6" stroke-linecap="round"/></svg></span></summary>
+        <div class="faq-body"><p>Selama berstatus <strong>Masih bisa diedit</strong>, supervisor bisa memperbaikinya sendiri. Setelah itu, perbaikan diajukan sebagai permintaan koreksi ke Admin Cabang. Laporan dengan durasi di atas jam efektif shift ditandai <strong>Melebihi durasi shift</strong> agar mudah dicek.</p></div>
+      </details>
+      <details>
+        <summary>Apakah Admin Cabang bisa melihat data cabang lain?<span class="pm" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#111827" stroke-width="1.6" stroke-linecap="round"/></svg></span></summary>
+        <div class="faq-body"><p>Tidak. Akses Admin Cabang dikunci ke cabangnya sendiri: DCO, supervisor, device, laporan, dan dashboard. Hanya Super Admin di DataVerge yang melihat seluruh cabang.</p></div>
+      </details>
+      <details>
+        <summary>Shift apa saja yang bisa dijalankan?<span class="pm" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#111827" stroke-width="1.6" stroke-linecap="round"/></svg></span></summary>
+        <div class="faq-body"><p>DCOTrack mengenal shift Pagi, Siang, dan Malam, masing-masing dengan durasi kerja efektif sendiri. Cabang tidak wajib menjalankan ketiganya. Shift yang dipakai disepakati saat setup cabang.</p></div>
+      </details>
+      <details>
+        <summary>Kalau target task berubah di tengah bulan, apa yang terjadi?<span class="pm" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#111827" stroke-width="1.6" stroke-linecap="round"/></svg></span></summary>
+        <div class="faq-body"><p>Target baru dicatat dengan tanggal efektif. Laporan sebelum tanggal itu tetap dihitung dengan target lama, jadi rekap bulan sebelumnya tidak berubah.</p></div>
+      </details>
+      <details>
+        <summary>Device perekaman milik siapa?<span class="pm" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#111827" stroke-width="1.6" stroke-linecap="round"/></svg></span></summary>
+        <div class="faq-body"><p>Setiap device didaftarkan dengan kode di DCOTrack dan dipakai DCO saat merekam. Kepemilikan, serah terima, dan penggantian device yang rusak diatur di perjanjian. <span class="tag tag-strong">Perlu konfirmasi</span></p></div>
+      </details>
+      <details>
+        <summary>Bagaimana mitra dibayar?<span class="pm" aria-hidden="true"><svg width="12" height="12" viewBox="0 0 12 12"><path d="M6 1v10M1 6h10" stroke="#111827" stroke-width="1.6" stroke-linecap="round"/></svg></span></summary>
+        <div class="faq-body"><p>Dasar perhitungannya jam video yang tercatat di DCOTrack dan sesuai brief. Tarif per jam, periode pembayaran, dan syaratnya ditetapkan di perjanjian kemitraan. <span class="tag tag-strong">Perlu konfirmasi</span></p></div>
+      </details>
+    </div>
+  </div>
+</section>
+
+<!-- ============ CTA / LEAD ============ -->
+<section class="sec cta" id="daftar" aria-labelledby="daftar-title">
+  <div class="wrap cta-grid">
+    <div>
+      <h2 id="daftar-title">Ajukan lokasi Anda sebagai cabang perekaman.</h2>
+      <p class="cta-lead">Isi data singkat tentang bisnis dan lokasi Anda. Tim DataVerge akan menghubungi untuk panggilan kenalan.</p>
+
+      <div class="after">
+        <div class="after-head"><h3>Kapan Anda dihubungi?</h3><span class="tag">Data contoh</span></div>
+        <p class="big num">2<small>hari kerja</small></p>
+        <ol>
+          <li><b>Hari 0</b><span>Formulir masuk ke tim kemitraan.</span></li>
+          <li><b>Hari 1–2</b><span>Tim menghubungi lewat WhatsApp atau email.</span></li>
+          <li><b>Hari 3</b><span>Panggilan kenalan dan jadwal cek lokasi.</span></li>
+        </ol>
+      </div>
+    </div>
+
+    <div class="form-card" aria-live="polite">
+      <form id="lead" novalidate>
+        <h3>Formulir pengajuan kemitraan</h3>
+        <p>Semua kolom wajib diisi, kecuali yang bertanda opsional.</p>
+        <div class="fgrid">
+          <div class="field">
+            <label for="f-nama">Nama Anda</label>
+            <input id="f-nama" name="nama" type="text" autocomplete="name" required aria-describedby="e-nama">
+            <span class="err" id="e-nama"></span>
+          </div>
+          <div class="field">
+            <label for="f-bisnis">Nama bisnis</label>
+            <input id="f-bisnis" name="bisnis" type="text" autocomplete="organization" required aria-describedby="e-bisnis">
+            <span class="err" id="e-bisnis"></span>
+          </div>
+          <div class="field">
+            <label for="f-kota">Kota lokasi perekaman</label>
+            <input id="f-kota" name="kota" type="text" autocomplete="address-level2" required aria-describedby="e-kota">
+            <span class="err" id="e-kota"></span>
+          </div>
+          <div class="field">
+            <label for="f-wa">Nomor WhatsApp</label>
+            <input id="f-wa" name="wa" type="tel" inputmode="tel" autocomplete="tel" placeholder="08xx xxxx xxxx" required aria-describedby="e-wa">
+            <span class="err" id="e-wa"></span>
+          </div>
+          <div class="field full">
+            <label for="f-email">Email kerja</label>
+            <input id="f-email" name="email" type="email" autocomplete="email" required aria-describedby="e-email">
+            <span class="err" id="e-email"></span>
+          </div>
+          <div class="field">
+            <label for="f-dco">Perkiraan jumlah DCO</label>
+            <select id="f-dco" name="dco" required aria-describedby="e-dco">
+              <option value="">Pilih rentang</option>
+              <option>1–5 orang</option>
+              <option>6–15 orang</option>
+              <option>16–30 orang</option>
+              <option>Lebih dari 30 orang</option>
+            </select>
+            <span class="err" id="e-dco"></span>
+          </div>
+          <div class="field">
+            <label for="f-lokasi">Status lokasi</label>
+            <select id="f-lokasi" name="lokasi" required aria-describedby="e-lokasi">
+              <option value="">Pilih status</option>
+              <option>Sudah ada dan siap dipakai</option>
+              <option>Ada, perlu ditata dulu</option>
+              <option>Belum ada</option>
+            </select>
+            <span class="err" id="e-lokasi"></span>
+          </div>
+          <fieldset class="field full" aria-describedby="e-shift">
+            <legend>Shift yang sanggup dijalankan</legend>
+            <div class="chips">
+              <div class="chip"><input type="checkbox" id="s-pagi" name="shift" value="Pagi"><label for="s-pagi">Pagi</label></div>
+              <div class="chip"><input type="checkbox" id="s-siang" name="shift" value="Siang"><label for="s-siang">Siang</label></div>
+              <div class="chip"><input type="checkbox" id="s-malam" name="shift" value="Malam"><label for="s-malam">Malam</label></div>
+            </div>
+            <span class="err" id="e-shift"></span>
+          </fieldset>
+          <div class="field full">
+            <label for="f-catatan">Catatan <span class="opt">(opsional)</span></label>
+            <textarea id="f-catatan" name="catatan" placeholder="Contoh: ruang 2 kamar, bisa mulai bulan depan"></textarea>
+          </div>
+        </div>
+        <div class="alert error" id="form-error" role="alert"></div>
+        <div class="form-foot">
+          <p>Data dipakai tim DataVerge hanya untuk menghubungi Anda soal program ini.</p>
+          <button class="btn btn-primary" type="submit" id="submit-btn"><span class="spinner" aria-hidden="true"></span><span class="lbl">Kirim pengajuan</span></button>
+        </div>
+      </form>
+
+      <div class="success" id="success" tabindex="-1">
+        <svg width="40" height="40" viewBox="0 0 40 40" aria-hidden="true"><rect width="40" height="40" rx="12" fill="#C8F45A"/><path d="M12 20.5l5.5 5.5L28.5 15" fill="none" stroke="#111827" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/></svg>
+        <h3>Pengajuan untuk <span id="s-bisnis"></span> tercatat.</h3>
+        <p>Ringkasan yang akan diterima tim kemitraan:</p>
+        <dl class="calc" id="s-summary"></dl>
+        <p class="proto">Catatan prototipe: formulir ini belum tersambung ke server, jadi belum ada data yang dikirim ke DataVerge.</p>
+        <button class="btn btn-secondary" type="button" id="again">Ajukan lokasi lain</button>
+      </div>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer class="foot">
+  <div class="wrap">
+    <div class="foot-row">
+      <div>
+        <a class="brand" href="#top">Data<span>Verge</span></a>
+        <p>Program kemitraan cabang perekaman. Laporan cabang dikelola di DCOTrack.</p>
+      </div>
+      <nav aria-label="Navigasi footer">
+        <ul>
+          <li><a href="#program">Program</a></li>
+          <li><a href="#cara-kerja">Cara kerja</a></li>
+          <li><a href="#manfaat">Manfaat</a></li>
+          <li><a href="#proses">Proses</a></li>
+          <li><a href="#faq">FAQ</a></li>
+          <li><a href="#daftar">Ajukan kemitraan</a></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="foot-note">
+      <span>Angka bertanda "Data contoh" adalah ilustrasi dari prototipe, bukan kinerja cabang nyata.</span>
+      <span>© <span id="yr">2026</span> DataVerge</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+document.documentElement.classList.add('js');
+(function(){
+  // Header border on scroll
+  var head=document.querySelector('.site-head');
+  var onScroll=function(){head.classList.toggle('scrolled',window.scrollY>8)};
+  window.addEventListener('scroll',onScroll,{passive:true});onScroll();
+
+  // Mobile menu
+  var btn=document.querySelector('.menu-btn'),nav=document.getElementById('nav');
+  function setMenu(open){nav.classList.toggle('open',open);btn.setAttribute('aria-expanded',String(open));btn.textContent=open?'Tutup':'Menu'}
+  btn.addEventListener('click',function(){setMenu(btn.getAttribute('aria-expanded')!=='true')});
+  nav.addEventListener('click',function(e){if(e.target.closest('a'))setMenu(false)});
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'&&nav.classList.contains('open')){setMenu(false);btn.focus()}});
+  window.matchMedia('(min-width:861px)').addEventListener('change',function(m){if(m.matches)setMenu(false)});
+
+  // Reveal charts once in view (purpose: data grows from zero so the reader sees the comparison to target)
+  var grows=document.querySelectorAll('.grow');
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){es.forEach(function(en){if(en.isIntersecting){en.target.classList.add('in');io.unobserve(en.target)}})},{threshold:.25});
+    grows.forEach(function(g){io.observe(g)});
+  } else grows.forEach(function(g){g.classList.add('in')});
+
+  document.getElementById('yr').textContent=new Date().getFullYear();
+
+  // Lead form
+  var form=document.getElementById('lead'),sub=document.getElementById('submit-btn'),
+      alertBox=document.getElementById('form-error'),success=document.getElementById('success');
+  var rules={
+    nama:function(v){return v.trim().length>=2||'Tulis nama Anda.'},
+    bisnis:function(v){return v.trim().length>=2||'Tulis nama bisnis.'},
+    kota:function(v){return v.trim().length>=2||'Tulis kota lokasi perekaman.'},
+    wa:function(v){var d=v.replace(/[\s-]/g,'');return /^(\+62|62|0)8\d{7,12}$/.test(d)||'Gunakan format nomor Indonesia, misalnya 0812 3456 7890.'},
+    email:function(v){return /^[^\s@]+@[^\s@]+\.[^\s@]{2,}$/.test(v.trim())||'Periksa lagi alamat email.'},
+    dco:function(v){return v!==''||'Pilih perkiraan jumlah DCO.'},
+    lokasi:function(v){return v!==''||'Pilih status lokasi.'}
+  };
+  function setErr(name,msg){
+    var el=form.elements[name],err=document.getElementById('e-'+name);
+    if(el&&el.setAttribute)el.setAttribute('aria-invalid',msg?'true':'false');
+    if(err)err.textContent=msg||'';
+  }
+  function validate(){
+    var first=null;
+    Object.keys(rules).forEach(function(k){var r=rules[k](form.elements[k].value);var msg=r===true?'':r;setErr(k,msg);if(msg&&!first)first=form.elements[k]});
+    var shifts=[].slice.call(form.querySelectorAll('input[name=shift]:checked'));
+    var es=document.getElementById('e-shift');
+    es.textContent=shifts.length?'':'Pilih minimal satu shift.';
+    if(!shifts.length&&!first)first=document.getElementById('s-pagi');
+    return first;
+  }
+  Object.keys(rules).forEach(function(k){
+    form.elements[k].addEventListener('blur',function(){if(this.value!==''){var r=rules[k](this.value);setErr(k,r===true?'':r)}});
+    form.elements[k].addEventListener('input',function(){if(this.getAttribute('aria-invalid')==='true'){var r=rules[k](this.value);if(r===true)setErr(k,'')}});
+  });
+  form.querySelectorAll('input[name=shift]').forEach(function(c){c.addEventListener('change',function(){if(form.querySelector('input[name=shift]:checked'))document.getElementById('e-shift').textContent=''})});
+
+  function setLoading(on){sub.disabled=on;sub.classList.toggle('is-loading',on);sub.querySelector('.lbl').textContent=on?'Mengirim…':'Kirim pengajuan'}
+
+  form.addEventListener('submit',function(e){
+    e.preventDefault();
+    alertBox.classList.remove('show');
+    var first=validate();
+    if(first){alertBox.textContent='Ada kolom yang belum lengkap. Periksa tanda merah di formulir.';alertBox.classList.add('show');first.focus();return}
+    setLoading(true);
+    // TODO: kirim ke endpoint lead DataVerge. Sementara disimulasikan; status offline ditampilkan sebagai error.
+    setTimeout(function(){
+      setLoading(false);
+      if(!navigator.onLine){alertBox.textContent='Koneksi terputus, pengajuan belum terkirim. Data Anda masih ada di formulir, coba kirim lagi setelah tersambung.';alertBox.classList.add('show');return}
+      var f=form.elements,shifts=[].map.call(form.querySelectorAll('input[name=shift]:checked'),function(c){return c.value}).join(', ');
+      document.getElementById('s-bisnis').textContent=f.bisnis.value.trim();
+      var rows=[['Kontak',f.nama.value.trim()],['Kota',f.kota.value.trim()],['Jumlah DCO',f.dco.value],['Lokasi',f.lokasi.value],['Shift',shifts]];
+      var dl=document.getElementById('s-summary');dl.innerHTML='';
+      rows.forEach(function(r){var d=document.createElement('div'),dt=document.createElement('dt'),dd=document.createElement('dd');dt.textContent=r[0];dd.textContent=r[1];d.appendChild(dt);d.appendChild(dd);dl.appendChild(d)});
+      form.hidden=true;success.classList.add('show');success.focus();
+    },900);
+  });
+  document.getElementById('again').addEventListener('click',function(){
+    form.reset();Object.keys(rules).forEach(function(k){setErr(k,'')});document.getElementById('e-shift').textContent='';
+    success.classList.remove('show');form.hidden=false;form.elements.nama.focus();
+  });
+})();
+</script>
+</body>
+</html>

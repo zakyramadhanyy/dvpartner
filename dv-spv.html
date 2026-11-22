@@ -1,0 +1,801 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DCOTRACK — Input Laporan</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--nila-50:#F1F3FD;--nila-100:#DEE3F9;--nila-200:#BDC6F1;--nila-300:#94A2E6;--nila-400:#6C7DD6;
+--nila-500:#4B5CC0;--nila-600:#3945A2;--nila-700:#2C3684;--nila-800:#232B66;--nila-900:#171D47;
+--kabut-50:#FAFAF8;--kabut-100:#F3F3EF;--kabut-200:#E7E7E1;--kabut-300:#D3D3CA;--kabut-400:#A9A99F;
+--kabut-500:#7D7D74;--kabut-600:#5D5D56;--kabut-700:#454540;--kabut-800:#2E2E2A;--kabut-900:#1A1A17;
+--panen-50:#EBF8F0;--panen-100:#D0EFDD;--panen-200:#A2E0BB;--panen-400:#37AC6F;--panen-500:#1B8E56;--panen-600:#137144;--panen-700:#0F5936;--panen-800:#0B4228;
+--senja-50:#FEF6E6;--senja-100:#FCE8C0;--senja-200:#F8D188;--senja-400:#DD941F;--senja-500:#BB7A14;--senja-600:#96610E;--senja-700:#754B0B;--senja-800:#553608;
+--delima-50:#FDEDED;--delima-100:#FAD4D4;--delima-200:#F3AAAA;--delima-400:#D94A4A;--delima-500:#BF3131;--delima-600:#9C2525;--delima-700:#7B1D1D;--delima-800:#5B1515;
+--f:'Urbanist',system-ui,-apple-system,sans-serif;
+--ink:var(--kabut-900);--ink2:var(--kabut-600);--ink3:var(--kabut-500);
+--line:#EDEDE8;--lineIn:#DFDFD9;
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-font-smoothing:antialiased}
+body{font-family:var(--f);font-size:16px;font-weight:400;line-height:1.55;color:var(--ink);background:#EFF0F5;min-height:100vh}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+i.ti{display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em;line-height:0;flex:none}
+i.ti svg{width:100%;height:100%;display:block}
+
+.demo{background:#fff;border-bottom:1px solid var(--line);padding:10px 22px;display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.demo b{font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--nila-800);opacity:.6}
+.demo button{font-family:var(--f);font-size:14px;font-weight:500;padding:6px 13px;border:1px solid var(--lineIn);background:var(--kabut-50);border-radius:999px;cursor:pointer;color:var(--kabut-700)}
+.demo button:hover{background:#fff;border-color:var(--kabut-400)}
+.demo button.on{background:var(--nila-900);border-color:var(--nila-900);color:#fff;font-weight:600}
+.demo span{font-size:14px;color:var(--ink3);margin-left:auto}
+
+/* top bar */
+.bar{background:var(--nila-900);color:#fff}
+.bar .in{max-width:1080px;margin:0 auto;padding:14px 22px;display:flex;align-items:center;gap:16px;flex-wrap:wrap}
+.brand{display:flex;align-items:center;gap:11px}
+.brand .lg{width:36px;height:36px;flex:none;border-radius:11px;background:rgba(255,255,255,.13);display:flex;align-items:center;justify-content:center;font-size:20px}
+.brand .nm{font-size:18px;font-weight:700;letter-spacing:-.02em;line-height:1.2}
+.brand .sb{font-size:14px;color:rgba(255,255,255,.5);line-height:1.2}
+.barR{margin-left:auto;display:flex;align-items:center;gap:12px}
+.swbtn{display:flex;align-items:center;gap:9px;padding:8px 14px;border-radius:10px;border:1px solid rgba(255,255,255,.2);background:rgba(255,255,255,.08);color:#fff;font-family:var(--f);font-size:14px;font-weight:600;cursor:pointer}
+.swbtn:hover{background:rgba(255,255,255,.16)}
+.swbtn i{font-size:18px;color:var(--nila-300)}
+.uc{display:flex;align-items:center;gap:10px;padding:5px 10px 5px 5px;border-radius:11px;background:rgba(255,255,255,.09)}
+.uc .av{width:32px;height:32px;flex:none;border-radius:9px;background:var(--nila-300);color:var(--nila-900);display:flex;align-items:center;justify-content:center;font-size:14px;font-weight:700}
+.uc .un{font-size:14px;font-weight:600;line-height:1.25;white-space:nowrap}
+.uc .ur{font-size:14px;color:rgba(255,255,255,.5);line-height:1.2}
+.uc .out{width:28px;height:28px;flex:none;border:0;background:transparent;color:rgba(255,255,255,.55);border-radius:8px;cursor:pointer;font-size:17px}
+.uc .out:hover{background:rgba(255,255,255,.14);color:#fff}
+
+.tabs{background:#fff;border-bottom:1px solid var(--line);position:sticky;top:0;z-index:30}
+.tabs .in{max-width:1080px;margin:0 auto;padding:0 22px;display:flex;gap:0;overflow-x:auto;scrollbar-width:none}
+.tabs .in::-webkit-scrollbar{display:none}
+.tabs a{display:flex;align-items:center;gap:9px;padding:14px 16px;font-size:16px;font-weight:500;color:var(--ink2);cursor:pointer;white-space:nowrap;border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs a i{font-size:19px;color:var(--kabut-500)}
+.tabs a:hover{color:var(--nila-800)}
+.tabs a.on{color:var(--nila-900);font-weight:700;border-bottom-color:var(--nila-900)}
+.tabs a.on i{color:var(--nila-700)}
+
+.wrap{max-width:1080px;margin:0 auto;padding:26px 22px 56px;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+h1{font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.2}
+h2{font-size:24px;font-weight:700;letter-spacing:-.025em;line-height:1.25}
+h3{font-size:18px;font-weight:600;letter-spacing:-.015em}
+.lede{font-size:16px;font-weight:300;color:var(--ink2);margin-top:8px}
+.sm{font-size:14px;font-weight:300;color:var(--ink3)}
+.mt8{margin-top:8px}.mt16{margin-top:16px}.mt24{margin-top:24px}.mt32{margin-top:32px}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:18px}
+.card .hd{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.card .hd .r{margin-left:auto;display:flex;gap:10px}
+.card .bd{padding:22px}
+.grid3{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+
+.q{background:#fff;border:1px solid var(--line);border-radius:18px;padding:20px 22px}
+.q .lb{font-size:14px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3)}
+.q .n{font-size:40px;font-weight:700;letter-spacing:-.035em;line-height:1.1;margin-top:6px}
+.q .ft{font-size:14px;font-weight:300;color:var(--ink3);margin-top:6px}
+.q .ft b{font-weight:600;color:var(--kabut-700)}
+
+.btn{font-family:var(--f);font-size:16px;font-weight:600;padding:12px 22px;min-height:50px;border-radius:12px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:9px;line-height:1.2;transition:background .15s,border-color .15s}
+.btn i{font-size:20px}
+.btn-p{background:var(--nila-900);color:#fff}.btn-p:hover{background:var(--nila-800)}
+.btn-g{background:#fff;color:var(--kabut-700);border-color:var(--lineIn)}.btn-g:hover{border-color:var(--kabut-400);background:var(--kabut-50)}
+.btn-bad{background:#fff;color:var(--delima-600);border-color:var(--delima-200)}.btn-bad:hover{background:var(--delima-50)}
+.btn-sm{font-size:14px;padding:8px 14px;min-height:38px;border-radius:9px}.btn-sm i{font-size:17px}
+.btn-lg{font-size:18px;min-height:58px;border-radius:14px}
+.btn[disabled]{background:var(--kabut-100);color:var(--kabut-400);border-color:transparent;cursor:not-allowed}
+.btnfull{width:100%}
+
+.f{margin-bottom:20px}
+.f label{display:block;font-size:16px;font-weight:600;color:var(--kabut-800);margin-bottom:8px}
+.f label .opt{font-weight:400;color:var(--ink3);font-size:14px}
+select,input,textarea{font-family:var(--f);font-size:16px;font-weight:400;padding:13px 15px;min-height:52px;width:100%;border:1px solid var(--lineIn);border-radius:12px;background:#fff;color:var(--ink)}
+textarea{min-height:0;line-height:1.55}
+input::placeholder{color:var(--kabut-400);font-weight:300}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--nila-300);outline-offset:1px;border-color:var(--nila-500)}
+input[disabled],select[disabled]{background:var(--kabut-100);color:var(--kabut-500);cursor:not-allowed}
+.f .h{font-size:14px;font-weight:300;color:var(--ink3);margin-top:8px;line-height:1.5}
+.f .err{font-size:14px;font-weight:500;color:var(--delima-600);margin-top:8px}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.sfx{position:relative}.sfx input{padding-right:74px}
+.sfx span{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:500;color:var(--ink3);pointer-events:none}
+
+.seg{display:flex;gap:10px}
+.seg button{flex:1;font-family:var(--f);font-size:16px;font-weight:600;padding:14px;min-height:56px;border-radius:12px;border:1px solid var(--lineIn);background:#fff;color:var(--kabut-700);cursor:pointer;display:flex;align-items:center;justify-content:center;gap:9px}
+.seg button i{font-size:20px}
+.seg button:hover{border-color:var(--kabut-400)}
+.seg button.on{background:var(--nila-900);border-color:var(--nila-900);color:#fff}
+.seg button.on.warn{background:var(--senja-600);border-color:var(--senja-600)}
+
+.batwrap{display:flex;align-items:center;gap:14px}
+.batwrap .sfx{flex:1}
+.batwrap .sfx input{font-size:24px;font-weight:700;letter-spacing:-.02em;padding-right:52px}
+.batwrap .tag{width:104px;flex:none;text-align:center;font-size:14px;font-weight:600;padding:12px 8px;border-radius:12px;line-height:1.3}
+
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;padding:4px 12px;border-radius:999px;white-space:nowrap;border:1px solid transparent;line-height:1.45}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.s-ok{background:var(--panen-50);color:var(--panen-800);border-color:var(--panen-100)}
+.s-wait{background:var(--senja-50);color:var(--senja-800);border-color:var(--senja-100)}
+.s-bad{background:var(--delima-50);color:var(--delima-800);border-color:var(--delima-100)}
+.s-run{background:var(--nila-50);color:var(--nila-800);border-color:var(--nila-100)}
+.s-off{background:var(--kabut-100);color:var(--kabut-700);border-color:var(--kabut-200)}
+
+.bn{border-radius:13px;padding:15px 18px;font-size:16px;font-weight:300;line-height:1.55;border:1px solid}
+.bn b{font-weight:600}
+.b-info{background:var(--nila-50);color:var(--nila-800);border-color:var(--nila-100)}
+.b-wait{background:var(--senja-50);color:var(--senja-800);border-color:var(--senja-100)}
+.b-bad{background:var(--delima-50);color:var(--delima-800);border-color:var(--delima-100)}
+.b-ok{background:var(--panen-50);color:var(--panen-800);border-color:var(--panen-100)}
+
+.lrow{display:flex;align-items:center;gap:16px;padding:16px 22px;border-bottom:1px solid var(--kabut-100);cursor:pointer;transition:background .12s}
+.lrow:last-child{border-bottom:0}
+.lrow:hover{background:var(--nila-50)}
+.lrow .ic{width:44px;height:44px;flex:none;border-radius:13px;background:var(--nila-50);color:var(--nila-700);display:flex;align-items:center;justify-content:center;font-size:20px}
+.lrow .mid{flex:1;min-width:0}
+.lrow .t1{font-size:16px;font-weight:600;letter-spacing:-.01em}
+.lrow .t2{font-size:14px;font-weight:300;color:var(--ink3);margin-top:2px}
+.lrow .rt{text-align:right;flex:none}
+.lrow .rt .j{font-size:18px;font-weight:700;letter-spacing:-.02em}
+
+.kv{display:flex;justify-content:space-between;gap:18px;padding:12px 0;border-bottom:1px solid var(--kabut-100);min-height:50px;align-items:center}
+.kv:last-child{border-bottom:0}.kv:first-child{padding-top:0}
+.kv .k{font-size:16px;font-weight:300;color:var(--ink2)}
+.kv .v{font-size:16px;font-weight:500;text-align:right}
+
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:18px}
+.search{position:relative;flex:1;min-width:200px;max-width:320px}
+.search i{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:19px;z-index:1}
+.search input{padding-left:44px}
+.empty{text-align:center;padding:52px 24px}
+.empty i{font-size:40px;color:var(--kabut-300)}
+
+.scrim{position:fixed;inset:0;background:rgba(23,29,71,.42);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:80;padding:24px;animation:fade .16s ease}
+.modal{background:#fff;border-radius:22px;width:100%;max-width:520px;max-height:88vh;overflow-y:auto;box-shadow:0 30px 80px rgba(23,29,71,.3)}
+.modal .hd{padding:24px 26px 18px;border-bottom:1px solid var(--line)}
+.modal .hd h3{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.modal .bd{padding:24px 26px}
+.modal .ft{padding:18px 26px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+.emb{width:66px;height:66px;border-radius:20px;display:flex;align-items:center;justify-content:center;font-size:32px;margin:0 auto}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,90px);background:var(--nila-900);color:#fff;font-size:16px;font-weight:500;padding:14px 22px;border-radius:999px;z-index:120;display:flex;align-items:center;gap:10px;box-shadow:0 14px 40px rgba(23,29,71,.35);transition:transform .26s cubic-bezier(.2,.9,.3,1);max-width:min(560px,90vw)}
+.toast.on{transform:translate(-50%,0)}
+.toast i{font-size:20px;flex:none}
+
+@media(max-width:820px){.grid3,.grid2,.f2{grid-template-columns:1fr}
+ .uc .un,.uc .ur,.swbtn span{display:none}.tabs a{padding:13px 12px}
+ h1{font-size:24px}.q .n{font-size:32px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+.rw{display:grid;grid-template-columns:36px minmax(150px,1fr) 108px 136px 96px 74px 76px;gap:10px;align-items:center;padding:11px 0;border-bottom:1px solid var(--kabut-100)}
+.rw:last-of-type{border-bottom:0}
+.rwhd{display:grid;grid-template-columns:36px minmax(150px,1fr) 108px 136px 96px 74px 76px;gap:10px;font-size:14px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);padding-bottom:10px;border-bottom:1px solid var(--line)}
+.rw .no{font-variant-numeric:tabular-nums;color:var(--ink3);font-weight:600;text-align:center;font-size:15px}
+.rw select,.rw input{min-height:46px;padding:10px 11px;font-size:15px;width:100%}
+.rw .dur{font-variant-numeric:tabular-nums;font-weight:600;color:var(--ink2);font-size:15px;text-align:center;background:var(--kabut-50);border-radius:9px;padding:12px 4px;border:1px solid var(--line)}
+.rw .act{display:flex;gap:5px;justify-content:flex-end}
+.ib{width:33px;height:33px;flex:none;border:1px solid var(--lineIn);background:#fff;border-radius:9px;cursor:pointer;color:var(--kabut-600);display:flex;align-items:center;justify-content:center;font-size:17px}
+.ib:hover{border-color:var(--kabut-400);background:var(--kabut-50)}
+.ib.del:hover{border-color:var(--delima-300);color:var(--delima-600);background:var(--delima-50)}
+.pbs{display:flex;gap:5px}
+.pbs button{flex:1;font-family:var(--f);font-size:14px;font-weight:600;padding:10px 3px;min-height:46px;border-radius:9px;border:1px solid var(--lineIn);background:#fff;color:var(--kabut-600);cursor:pointer}
+.pbs button:hover{border-color:var(--kabut-400)}
+.pbs button.on{background:var(--kabut-800);border-color:var(--kabut-800);color:#fff}
+.pbs button.on.y{background:var(--senja-600);border-color:var(--senja-600)}
+.totbar{display:flex;align-items:center;gap:14px;padding-top:18px;margin-top:4px;border-top:2px solid var(--kabut-200)}
+.totbar .lbl{font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3)}
+.totbar .val{margin-left:auto;font-size:24px;font-weight:700;letter-spacing:-.02em;font-variant-numeric:tabular-nums}
+.hdcard{background:var(--nila-50);border:1px solid var(--nila-100);border-radius:14px;padding:18px 20px}
+.hdcard .f{margin-bottom:16px}
+.hdcard .f:last-child{margin-bottom:0}
+.ro{min-height:50px;padding:13px 15px;border:1px solid var(--line);border-radius:12px;background:var(--kabut-100);color:var(--ink2);font-size:16px;display:flex;align-items:center;gap:9px}
+.tk{display:grid;grid-template-columns:38px 1fr 96px 108px 84px;gap:10px;padding:10px 0;border-bottom:1px solid var(--kabut-100);align-items:center;font-size:15px}
+.tk:last-child{border-bottom:0}
+.tkhd{display:grid;grid-template-columns:38px 1fr 96px 108px 84px;gap:10px;font-size:14px;font-weight:500;letter-spacing:.05em;text-transform:uppercase;color:var(--ink3);padding-bottom:9px;border-bottom:1px solid var(--line)}
+@media(max-width:900px){
+ .rwhd,.tkhd{display:none}
+ .rw{grid-template-columns:1fr 1fr;gap:9px;border:1px solid var(--lineIn);border-radius:13px;padding:14px;margin-bottom:11px;position:relative}
+ .rw .no{position:absolute;top:-9px;left:13px;background:var(--nila-900);color:#fff;width:24px;height:24px;border-radius:7px;display:flex;align-items:center;justify-content:center;font-size:13px}
+ .rw .cTask{grid-column:1/-1}
+ .rw .act{grid-column:1/-1;justify-content:flex-start;padding-top:2px}
+ .tk{grid-template-columns:1fr 1fr;gap:6px;border:1px solid var(--line);border-radius:11px;padding:12px;margin-bottom:9px}
+}
+</style>
+</head>
+<body>
+
+<div class="demo">
+  <b>Masuk sebagai</b>
+  <button id="r-spv" onclick="setRole('spv')">Supervisor</button>
+  <button id="r-dual" onclick="setRole('dual')">Admin + SPV</button>
+  <button onclick="S.sc='login';paint()">Layar login</button>
+  <button onclick="S.sc='ganti';paint()">Login pertama kali</button>
+  <span>Akun Admin + SPV punya tombol pindah platform</span>
+</div>
+
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---- set ikon SVG tertanam, tanpa ketergantungan CDN ---- */
+const ICONS={
+_:'<circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>',
+'alert-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
+'alert-triangle':'<path d="M10.3 4.3 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+'arrow-down':'<path d="M12 5v14"/><path d="M18 13l-6 6l-6-6"/>',
+'arrow-down-right':'<path d="M7 7l10 10"/><path d="M17 8v9h-9"/>',
+'arrow-left':'<path d="M19 12H5"/><path d="M11 18l-6-6l6-6"/>',
+'arrow-right':'<path d="M5 12h14"/><path d="M13 6l6 6l-6 6"/>',
+'arrow-up-right':'<path d="M7 17l10-10"/><path d="M8 7h9v9"/>',
+'arrows-exchange':'<path d="M7 10h13"/><path d="M17 7l3 3l-3 3"/><path d="M17 17H4"/><path d="M7 14l-3 3l3 3"/>',
+battery:'<rect x="2" y="7" width="16" height="10" rx="2.5"/><path d="M20.5 11v2"/><path d="M5 10.5v3"/><path d="M8 10.5v3"/>',
+'battery-off':'<rect x="2" y="7" width="16" height="10" rx="2.5"/><path d="M20.5 11v2"/><path d="M5 10.5v3"/><path d="M3 4l18 16"/>',
+bolt:'<path d="M13 3L5 13.5h6L10.5 21L19 10.5h-6z"/>',
+building:'<path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h2a2 2 0 0 1 2 2v10"/><path d="M2.5 21h19"/><path d="M8 7h4"/><path d="M8 11h4"/><path d="M8 15h4"/>',
+calendar:'<rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/>',
+camera:'<path d="M5 7h1.5l1.5-2.5h8L17.5 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3.4"/>',
+'chart-bar':'<path d="M3.5 20.5h17"/><rect x="5" y="11" width="3.6" height="7" rx="1"/><rect x="10.2" y="6.5" width="3.6" height="11.5" rx="1"/><rect x="15.4" y="13.5" width="3.6" height="4.5" rx="1"/>',
+'chart-donut':'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3.5v5"/><path d="M19.6 15.2l-4.6-1.9"/>',
+'chart-line':'<path d="M3.5 20.5h17"/><path d="M5 16l4.5-5l3.5 3l5.5-7"/>',
+check:'<path d="M5 12.5l5 5L20 7"/>',
+checks:'<path d="M3 12.5l3.5 3.5l6-6"/><path d="M11.5 16l2 2l7-7"/>',
+'chevron-down':'<path d="M6 9l6 6l6-6"/>',
+'chevron-right':'<path d="M9 6l6 6l-6 6"/>',
+'circle-check':'<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5l4.5-4.5"/>',
+'clipboard-list':'<path d="M9.5 4.5H7A2 2 0 0 0 5 6.5v13A2 2 0 0 0 7 21.5h10a2 2 0 0 0 2-2v-13a2 2 0 0 0-2-2h-2.5"/><rect x="9" y="2.5" width="6" height="4" rx="1.5"/><path d="M9 12h6"/><path d="M9 16h4"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+'clock-hour':'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/><path d="M12 3v1.5"/><path d="M21 12h-1.5"/>',
+database:'<ellipse cx="12" cy="6" rx="8" ry="3.2"/><path d="M4 6v12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2V6"/><path d="M4 12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2"/>',
+'device-camera':'<rect x="5" y="2.5" width="14" height="19" rx="3"/><circle cx="12" cy="11" r="3.2"/><path d="M10 6h4"/><path d="M10.5 18.5h3"/>',
+'device-mobile':'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18h2"/>',
+download:'<path d="M4 16.5v2.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5"/><path d="M7.5 11l4.5 4.5l4.5-4.5"/><path d="M12 3v12.5"/>',
+edit:'<path d="M4 20.5h4.5L19 10a2.3 2.3 0 0 0-3.2-3.2L5 17.3z"/><path d="M14.5 7.5l3.2 3.2"/>',
+eye:'<path d="M2.5 12S6 5.5 12 5.5S21.5 12 21.5 12S18 18.5 12 18.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+filter:'<path d="M3.5 5h17l-6.5 7.6V20l-4 1.5v-8.9z"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M12 17.5h.01"/><path d="M9.8 9.5a2.3 2.3 0 1 1 2.6 3.1v1.2"/>',
+history:'<path d="M4 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 3.5v5h5"/><path d="M12 8v4.3l3 1.8"/>',
+'info-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v5h1"/>',
+key:'<circle cx="8" cy="15" r="4"/><path d="M11 12.5L20 3.5"/><path d="M17 6.5l2.5 2.5"/><path d="M15 8.5l2.5 2.5"/>',
+'layout-dashboard':'<rect x="3.5" y="3.5" width="7.5" height="9.5" rx="2"/><rect x="3.5" y="16" width="7.5" height="4.5" rx="2"/><rect x="13.5" y="3.5" width="7" height="4.5" rx="2"/><rect x="13.5" y="11" width="7" height="9.5" rx="2"/>',
+'layout-sidebar':'<rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M10 4v16"/><path d="M15.5 10l-2 2l2 2"/>',
+lock:'<rect x="4.5" y="10.5" width="15" height="10.5" rx="3"/><path d="M8 10.5V7a4 4 0 1 1 8 0v3.5"/>',
+logout:'<path d="M14 8.5V6.5a2.5 2.5 0 0 0-2.5-2.5H6A2.5 2.5 0 0 0 3.5 6.5v11A2.5 2.5 0 0 0 6 20h5.5a2.5 2.5 0 0 0 2.5-2.5v-2"/><path d="M20.5 12H10"/><path d="M17.5 9l3 3l-3 3"/>',
+mail:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7.5l8.5 6l8.5-6"/>',
+minus:'<path d="M5 12h14"/>',
+'note-plus':'<path d="M14 3.5H6.5A2 2 0 0 0 4.5 5.5v13a2 2 0 0 0 2 2h8"/><path d="M8.5 8.5h6"/><path d="M8.5 12.5h4"/><path d="M18 14v7"/><path d="M14.5 17.5h7"/>',
+phone:'<path d="M5 3.5h3.2l1.6 4l-2 1.2a11 11 0 0 0 5.5 5.5l1.2-2l4 1.6V17a2.5 2.5 0 0 1-2.7 2.5C9.3 18.9 5.1 14.7 4.5 6.2A2.5 2.5 0 0 1 5 3.5z"/>',
+'player-play':'<path d="M8 5.2v13.6a.6.6 0 0 0 .92.5l10.6-6.8a.6.6 0 0 0 0-1l-10.6-6.8A.6.6 0 0 0 8 5.2z" fill="currentColor" stroke="none"/>',
+plus:'<path d="M12 5v14"/><path d="M5 12h14"/>',
+point:'<circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/>',
+refresh:'<path d="M20 11.5a8 8 0 0 0-13.7-5L4 8.8"/><path d="M3.5 4.5v4.5h4.5"/><path d="M4 12.5a8 8 0 0 0 13.7 5l2.3-2.3"/><path d="M20.5 19.5V15h-4.5"/>',
+search:'<circle cx="10.5" cy="10.5" r="6.8"/><path d="M20.5 20.5l-5.2-5.2"/>',
+settings:'<circle cx="12" cy="12" r="3"/><path d="M10.3 3.4a1.4 1.4 0 0 1 3.4 0l.2 1.3a7 7 0 0 1 1.6.9l1.2-.5a1.4 1.4 0 0 1 1.7 2.9l-1 .9a7 7 0 0 1 0 1.9l1 .9a1.4 1.4 0 0 1-1.7 2.9l-1.2-.5a7 7 0 0 1-1.6.9l-.2 1.3a1.4 1.4 0 0 1-3.4 0l-.2-1.3a7 7 0 0 1-1.6-.9l-1.2.5a1.4 1.4 0 0 1-1.7-2.9l1-.9a7 7 0 0 1 0-1.9l-1-.9a1.4 1.4 0 0 1 1.7-2.9l1.2.5a7 7 0 0 1 1.6-.9z"/>',
+'shield-lock':'<path d="M12 3l8 3v5.5c0 4.6-3.3 8.2-8 9.5c-4.7-1.3-8-4.9-8-9.5V6z"/><rect x="9.5" y="11" width="5" height="4.5" rx="1.2"/><path d="M10.8 11V9.8a1.2 1.2 0 0 1 2.4 0V11"/>',
+star:'<path d="M12 3.5l2.6 5.4l5.9.8l-4.3 4.1l1 5.9L12 17l-5.2 2.7l1-5.9L3.5 9.7l5.9-.8z"/>',
+target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>',
+trash:'<path d="M4 7h16"/><path d="M9.5 7V5.2A1.2 1.2 0 0 1 10.7 4h2.6a1.2 1.2 0 0 1 1.2 1.2V7"/><path d="M6.5 7l.9 12.4a1.6 1.6 0 0 0 1.6 1.6h6a1.6 1.6 0 0 0 1.6-1.6L17.5 7"/>',
+'trending-up':'<path d="M3.5 17l5.5-5.5l3.5 3.5l6-6"/><path d="M14 9h4.5v4.5"/>',
+upload:'<path d="M4 16.5v2.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5"/><path d="M7.5 7.5L12 3l4.5 4.5"/><path d="M12 3v12.5"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M5.5 21v-1.2A4.8 4.8 0 0 1 10.3 15h3.4a4.8 4.8 0 0 1 4.8 4.8V21"/>',
+'user-check':'<circle cx="9.5" cy="8" r="4"/><path d="M3.5 21v-1.2A4.8 4.8 0 0 1 8.3 15H12"/><path d="M15.5 17.5l2 2l4-4"/>',
+'user-cog':'<circle cx="9.5" cy="8" r="4"/><path d="M3.5 21v-1.2A4.8 4.8 0 0 1 8.3 15H12"/><circle cx="18" cy="18" r="2.5"/><path d="M18 14.2V15"/><path d="M18 21v.8"/><path d="M21.4 16l-.7.4"/><path d="M15.3 19.6l-.7.4"/>',
+'user-star':'<circle cx="9.5" cy="8" r="4"/><path d="M3.5 21v-1.2A4.8 4.8 0 0 1 8.3 15H11"/><path d="M17.5 14l1.2 2.4l2.6.4l-1.9 1.8l.4 2.6l-2.3-1.2l-2.3 1.2l.4-2.6l-1.9-1.8l2.6-.4z"/>',
+users:'<circle cx="9" cy="8" r="3.8"/><path d="M3 21v-1.2A4.8 4.8 0 0 1 7.8 15h2.4a4.8 4.8 0 0 1 4.8 4.8V21"/><path d="M16.5 4.6a3.8 3.8 0 0 1 0 6.8"/><path d="M21 21v-1.2a4.8 4.8 0 0 0-3.2-3.8"/>',
+video:'<rect x="3" y="6" width="12.5" height="12" rx="2.5"/><path d="M15.5 10.5l4.4-2.7a.5.5 0 0 1 .76.43v7.54a.5.5 0 0 1-.76.43l-4.4-2.7z"/>',
+x:'<path d="M6 6l12 12"/><path d="M18 6L6 18"/>'
+};
+function svgIcon(n){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+(ICONS[n]||ICONS._)+'</svg>'}
+function hydrateIcons(){document.querySelectorAll('i.ti:empty').forEach(el=>{
+  const c=[...el.classList].find(x=>x.startsWith('ti-'));
+  el.innerHTML=svgIcon(c?c.slice(3):'_');
+});}
+
+</script>
+<script>
+const JAM=n=>String(n).replace('.',',')+' jam';
+const ROLES={
+ spv:{n:'Yoga Pratama',kode:'118',r:'Supervisor',cb:'Surabaya',email:'yoga.p@dcotrack.id',admin:false},
+ dual:{n:'Dewi Anggraini',kode:'202',r:'Admin Cabang + SPV',cb:'Jakarta Pusat',email:'dewi.a@dcotrack.id',admin:true}
+};
+const DCO={
+ 'Surabaya':['Andi Kurniawan','Maya Lestari','Bagas Saputra'],
+ 'Jakarta Pusat':['Rizky Ramadhan','Siti Rahayu','Putri Handayani']
+};
+const DEVICE={
+ 'Surabaya':['922','939','810','1177'],
+ 'Jakarta Pusat':['1033','822','1041','877']
+};
+const TASK=[
+ {n:'SweeptheFloor-LivingRoom',target:40,real:34},
+ {n:'ReplaceFabric-Pillowcase',target:30,real:31},
+ {n:'FoldAndReapplyFabric-Blanket',target:25,real:12},
+ {n:'UnloadingItems-Suitcase',target:35,real:28},
+ {n:'LoadingItems-Suitcase',target:50,real:44},
+ {n:'SettingandClearingTableDecorations',target:20,real:9}
+];
+const SHIFT=[
+ {n:'Pagi',jam:'07:00–16:00',efektif:8},
+ {n:'Siang',jam:'15:00–23:00',efektif:7},
+ {n:'Malam',jam:'23:00–07:00',efektif:7}
+];
+const shiftOf=n=>SHIFT.find(x=>x.n===n);
+let LAP=[
+ {id:'LP-2401',tgl:'29 Sep 2026',jam2:'14:10',dco:'Andi Kurniawan',shift:'Pagi',baru:true,rows:[
+   {task:'SweeptheFloor-LivingRoom',device:'922',pb:false,bat:30},
+   {task:'ReplaceFabric-Pillowcase',device:'939',pb:true,bat:30},
+   {task:'FoldAndReapplyFabric-Blanket',device:'810',pb:false,bat:28},
+   {task:'FoldAndReapplyFabric-Blanket',device:'1177',pb:true,bat:26},
+   {task:'UnloadingItems-Suitcase',device:'922',pb:true,bat:24},
+   {task:'LoadingItems-Suitcase',device:'810',pb:false,bat:22},
+   {task:'SettingandClearingTableDecorations',device:'922',pb:true,bat:19},
+   {task:'LoadingItems-Suitcase',device:'939',pb:true,bat:18}]},
+ {id:'LP-2397',tgl:'29 Sep 2026',jam2:'11:20',dco:'Maya Lestari',shift:'Pagi',baru:true,rows:[
+   {task:'LoadingItems-Suitcase',device:'939',pb:false,bat:61},
+   {task:'SweeptheFloor-LivingRoom',device:'939',pb:false,bat:54},
+   {task:'ReplaceFabric-Pillowcase',device:'1177',pb:true,bat:48}]},
+ {id:'LP-2392',tgl:'28 Sep 2026',jam2:'16:45',dco:'Bagas Saputra',shift:'Siang',baru:false,rows:[
+   {task:'UnloadingItems-Suitcase',device:'810',pb:true,bat:19},
+   {task:'UnloadingItems-Suitcase',device:'810',pb:true,bat:15}]},
+ {id:'LP-2388',tgl:'28 Sep 2026',jam2:'09:30',dco:'Andi Kurniawan',shift:'Pagi',baru:false,rows:[
+   {task:'FoldAndReapplyFabric-Blanket',device:'922',pb:false,bat:74},
+   {task:'SweeptheFloor-LivingRoom',device:'922',pb:false,bat:66},
+   {task:'LoadingItems-Suitcase',device:'922',pb:false,bat:59},
+   {task:'ReplaceFabric-Pillowcase',device:'922',pb:true,bat:51}]},
+ {id:'LP-2381',tgl:'27 Sep 2026',jam2:'19:15',dco:'Maya Lestari',shift:'Malam',baru:false,rows:[
+   {task:'ReplaceFabric-Pillowcase',device:'1177',pb:false,bat:52},
+   {task:'SettingandClearingTableDecorations',device:'1177',pb:false,bat:44}]}
+];
+const jamLap=l=>l.rows.length;
+const totalJamAll=arr=>arr.reduce((a,l)=>a+jamLap(l),0);
+
+function blankRow(){return {task:'',device:'',pb:null,bat:''}}
+const S={role:'spv',sc:'home',sel:null,modal:null,q:'',fTask:'Semua',
+ form:{tgl:'2026-09-29',shift:'',dco:'',rows:[blankRow()]}};
+
+let TT=null;
+function toast(msg,kind){const el=document.getElementById('toast');if(!el)return;
+  const ic={ok:'circle-check',bad:'alert-circle',info:'info-circle'}[kind||'info'];
+  el.innerHTML='<i class="ti ti-'+ic+'"></i><span>'+msg+'</span>';
+  el.classList.add('on');hydrateIcons();clearTimeout(TT);TT=setTimeout(()=>el.classList.remove('on'),3200)}
+
+function me(){return ROLES[S.role]}
+function setRole(r){S.role=r;S.sc='home';S.sel=null;S.modal=null;resetForm();paint()}
+function go(id){S.sc=id;S.sel=null;S.modal=null;paint()}
+function closeModal(){S.modal=null;paint()}
+function resetForm(keepHead){
+  const F=S.form;
+  S.form=keepHead?{tgl:F.tgl,shift:F.shift,dco:'',rows:[blankRow()]}
+                 :{tgl:'2026-09-29',shift:'',dco:'',rows:[blankRow()]}}
+
+function paint(){
+  ['spv','dual'].forEach(r=>{const b=document.getElementById('r-'+r);if(b)b.className=S.role===r?'on':''});
+  document.getElementById('root').innerHTML=(S.sc==='login'||S.sc==='ganti')?V[S.sc]():shell();
+  hydrateIcons();
+  if(S.sc==='buat')refreshTot();
+  window.scrollTo(0,0);
+}
+
+/* ---------- LOGIN ---------- */
+V_login=()=>`
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 22px;background:#fff">
+ <div style="width:100%;max-width:420px">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
+    <div style="width:44px;height:44px;border-radius:13px;background:var(--nila-900);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px"><i class="ti ti-clipboard-list"></i></div>
+    <div><div style="font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.2">DCOTRACK</div><div class="sm">Input Laporan DCO</div></div>
+  </div>
+  <h1>Masuk</h1>
+  <p class="lede">Pakai akun yang diberikan perusahaan. Kalau belum punya, hubungi Admin Cabang kamu.</p>
+  <div style="margin-top:28px">
+    <div class="f"><label>Email</label><input id="ae" type="email" value="yoga.p@dcotrack.id" placeholder="nama@dcotrack.id"></div>
+    <div class="f"><label>Password</label><input id="ap" type="password" value="rahasia123" placeholder="Masukkan password"></div>
+    <div id="aerr"></div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:14px">
+      <button class="btn btn-g" style="border:0;background:transparent;color:var(--nila-700);min-height:36px;padding:0;font-size:14px" onclick="toast('Link reset dikirim ke emailmu, berlaku 30 menit.','ok')">Lupa Password?</button></div>
+    <button class="btn btn-p btnfull btn-lg" onclick="tryLogin()">Masuk<i class="ti ti-arrow-right"></i></button>
+  </div>
+  <div class="bn b-info mt24">Coba <b>baru@dcotrack.id</b> untuk simulasi login pertama kali yang wajib ganti password.</div>
+ </div>
+</div>`;
+
+function tryLogin(){
+  const e=document.getElementById('ae').value.trim(),p=document.getElementById('ap').value;
+  const box=document.getElementById('aerr');
+  if(!e||!p){box.innerHTML='<div class="bn b-bad" style="margin-bottom:16px">Email dan password wajib diisi.</div>';return}
+  if(e==='baru@dcotrack.id'){S.sc='ganti';paint();return}
+  const akun={'yoga.p@dcotrack.id':'spv','dewi.a@dcotrack.id':'dual'};
+  if(!akun[e]){box.innerHTML='<div class="bn b-bad" style="margin-bottom:16px">Email belum terdaftar. Silakan hubungi admin.</div>';return}
+  if(p!=='rahasia123'){box.innerHTML='<div class="bn b-bad" style="margin-bottom:16px">Email atau password salah, silakan coba lagi.</div>';return}
+  setRole(akun[e]);
+}
+
+V_ganti=()=>`
+<div style="min-height:100vh;display:flex;align-items:center;justify-content:center;padding:40px 22px;background:#fff">
+ <div style="width:100%;max-width:420px">
+  <div class="emb" style="background:var(--senja-50);color:var(--senja-600);margin:0 0 20px"><i class="ti ti-key"></i></div>
+  <h1>Buat password baru</h1>
+  <p class="lede">Ini login pertamamu. Password sementara dari email harus diganti dulu sebelum masuk.</p>
+  <div style="margin-top:28px">
+    <div class="f"><label>Password sementara</label><input type="password" value="Dc0Tr4ck!" disabled></div>
+    <div class="f"><label>Password baru</label><input type="password" placeholder="Minimal 8 karakter"><div class="h">Pakai kombinasi huruf dan angka</div></div>
+    <div class="f"><label>Ulangi password baru</label><input type="password" placeholder="Ketik ulang password baru"></div>
+    <button class="btn btn-p btnfull btn-lg" onclick="setRole('spv');toast('Password berhasil diganti. Selamat datang!','ok')">Simpan &amp; masuk</button>
+  </div>
+ </div>
+</div>`;
+
+/* ---------- SHELL ---------- */
+function shell(){
+  const M=me();const ini=M.n.split(' ').map(x=>x[0]).slice(0,2).join('');
+  const tab=(id,ic,lb)=>`<a class="${S.sc===id?'on':''}" onclick="go('${id}')"><i class="ti ti-${ic}"></i>${lb}</a>`;
+  return `
+  <header class="bar"><div class="in">
+    <div class="brand"><div class="lg"><i class="ti ti-clipboard-list"></i></div>
+      <div><div class="nm">DCOTRACK</div><div class="sb">Input Laporan · ${M.cb}</div></div></div>
+    <div class="barR">
+      ${M.admin?`<button class="swbtn" onclick="toast('Berpindah ke Konsol Admin untuk cabang ${M.cb}.','info')">
+        <i class="ti ti-arrows-exchange"></i><span>Konsol Admin</span></button>`:''}
+      <div class="uc"><div class="av">${ini}</div>
+        <div><div class="un">${M.n}</div><div class="ur">${M.r}</div></div>
+        <button class="out" onclick="S.sc='login';paint()" title="Keluar"><i class="ti ti-logout"></i></button></div>
+    </div>
+  </div></header>
+  <nav class="tabs"><div class="in">
+    ${tab('home','layout-dashboard','Beranda')}
+    ${tab('buat','note-plus','Buat Laporan')}
+    ${tab('riwayat','history','Riwayat')}
+    ${tab('profil','user','Profil')}
+  </div></nav>
+  <div class="wrap">${(V[S.sc]||V.home)()}</div>
+  ${S.modal?S.modal():''}`;
+}
+function pill(k,t){return `<span class="pill s-${k}">${t}</span>`}
+function batPill(b){return b<20?pill('bad',b+'%'):b<40?pill('wait',b+'%'):pill('ok',b+'%')}
+
+const V={login:()=>V_login(),ganti:()=>V_ganti()};
+
+/* ---------- BERANDA ---------- */
+V.home=()=>{
+  const M=me();
+  const today=LAP.filter(l=>l.tgl==='29 Sep 2026');
+  const jamHariIni=totalJamAll(today);
+  const sudah=today.map(l=>l.dco);
+  const belum=DCO[M.cb].filter(d=>!sudah.includes(d));
+  const last5=LAP.slice(0,5);
+  return `
+  <div style="display:flex;align-items:flex-end;gap:18px;flex-wrap:wrap">
+    <div><h1>Halo, ${M.n.split(' ')[0]}</h1>
+    <p class="lede">Selasa, 29 September 2026 · Cabang ${M.cb} · SPV ${M.kode}</p></div>
+    <button class="btn btn-p btn-lg" style="margin-left:auto" onclick="go('buat')"><i class="ti ti-note-plus"></i> Buat Laporan Baru</button>
+  </div>
+
+  <div class="grid3 mt24">
+    <div class="q"><div class="lb">DCO sudah dilaporkan</div><div class="n num">${today.length} / ${DCO[M.cb].length}</div>
+      <div class="ft">Hari ini, cabang ${M.cb}</div></div>
+    <div class="q"><div class="lb">Jam video tercatat</div><div class="n num">${jamHariIni}</div>
+      <div class="ft">Dari <b>${jamHariIni} baris task</b> hari ini</div></div>
+    <div class="q"><div class="lb">Total bulan ini</div><div class="n num">${LAP.length*7}</div>
+      <div class="ft"><b>${JAM(94)}</b> terkumpul</div></div>
+  </div>
+
+  ${belum.length?`<div class="card mt24" style="border-color:var(--senja-200)"><div class="hd"><div>
+      <h3>Belum dilaporkan hari ini</h3>
+      <div class="sm">${belum.length} DCO belum punya laporan untuk tanggal 29 September</div></div></div>
+    <div class="bd" style="display:flex;gap:10px;flex-wrap:wrap">
+      ${belum.map(d=>`<button class="btn btn-g" onclick="mulaiUntuk('${d}')"><i class="ti ti-user-plus"></i> ${d}</button>`).join('')}
+    </div></div>`
+   :`<div class="bn b-ok mt24"><b>Semua DCO sudah dilaporkan hari ini.</b> Tidak ada yang terlewat.</div>`}
+
+  <div class="card mt24"><div class="hd"><div><h3>Laporan terakhir yang kamu input</h3>
+    <div class="sm">5 laporan terbaru</div></div>
+    <div class="r"><button class="btn btn-g btn-sm" onclick="go('riwayat')">Lihat semua <i class="ti ti-arrow-right"></i></button></div></div>
+    ${last5.map(l=>`<div class="lrow" onclick="S.sel='${l.id}';S.sc='riwayat';paint()">
+      <div class="ic"><i class="ti ti-video"></i></div>
+      <div class="mid"><div class="t1">${l.dco}</div>
+        <div class="t2">${l.tgl} ${l.jam2} · shift ${l.shift} · ${l.rows.length} task</div></div>
+      <div class="rt"><div class="j num">${JAM(jamLap(l))}</div>
+        <div class="sm" style="margin-top:4px">${l.id}</div></div>
+    </div>`).join('')}
+  </div>
+
+  <div class="card mt24"><div class="hd"><div><h3>Progress target task</h3>
+    <div class="sm">1 baris task = 1 jam video. Diperbarui tiap laporan masuk.</div></div></div>
+    <div class="bd" style="padding:8px 22px 18px">
+    ${TASK.map(t=>{const p=Math.round(t.real/t.target*100);
+      const c=p>=100?'var(--panen-500)':p>=70?'var(--nila-500)':p>=40?'var(--senja-400)':'var(--delima-400)';
+      return `<div style="display:flex;align-items:center;gap:16px;padding:12px 0;border-bottom:1px solid var(--kabut-100)">
+        <div style="width:210px;flex:none;font-weight:500;font-size:15px">${t.n}</div>
+        <div style="flex:1;height:22px;border-radius:7px;background:var(--kabut-100);overflow:hidden">
+          <i style="display:block;height:100%;width:${Math.min(100,p)}%;background:${c};border-radius:7px"></i></div>
+        <div style="width:140px;flex:none;text-align:right;font-size:14px;font-weight:600">${JAM(t.real)}
+          <small style="display:block;font-weight:300;color:var(--ink3)">target ${t.target} jam · ${p}%</small></div>
+      </div>`}).join('')}
+    </div>
+  </div>`};
+
+function mulaiUntuk(d){resetForm();S.form.dco=d;S.sc='buat';paint()}
+
+/* ---------- BUAT LAPORAN ---------- */
+const BULAN=['Jan','Feb','Mar','Apr','Mei','Jun','Jul','Agu','Sep','Okt','Nov','Des'];
+function fmtTgl(iso){const d=new Date(iso+'T00:00:00');
+  return isNaN(d)?iso:d.getDate()+' '+BULAN[d.getMonth()]+' '+d.getFullYear()}
+
+V.buat=()=>{
+  const M=me();const F=S.form;
+  const opt=(arr,val)=>arr.map(x=>`<option ${x===val?'selected':''}>${x}</option>`).join('');
+  const sh=shiftOf(F.shift);
+  return `
+  <h1>Buat Laporan Baru</h1>
+  <p class="lede">Isi kepala laporan sekali, lalu tambahkan baris task sebanyak yang dikerjakan DCO.</p>
+
+  <div class="hdcard mt24">
+    <div class="grid2" style="grid-template-columns:1fr 1fr;gap:18px">
+      <div class="f"><label>Tanggal</label>
+        <input type="date" value="${F.tgl}" onchange="setHead('tgl',this.value)"></div>
+      <div class="f"><label>Shift</label>
+        <select onchange="setHead('shift',this.value)"><option value="">Pilih shift</option>
+          ${SHIFT.map(x=>`<option ${x.n===F.shift?'selected':''}>${x.n}</option>`).join('')}</select>
+        <div class="h">${sh?`Jam ${sh.jam} · durasi kerja efektif ${sh.efektif} jam`:'Jam kerja tampil otomatis setelah shift dipilih'}</div></div>
+      <div class="f"><label>Supervisor</label>
+        <div class="ro"><i class="ti ti-lock" style="font-size:18px;color:var(--ink3)"></i> ${M.kode} - ${M.n}</div>
+        <div class="h">Terisi otomatis dari akun kamu</div></div>
+      <div class="f"><label>Nama DCO</label>
+        <select onchange="setHead('dco',this.value)"><option value="">Pilih DCO</option>${opt(DCO[M.cb],F.dco)}</select>
+        <div class="h">Hanya DCO aktif di cabang ${M.cb}</div></div>
+    </div>
+  </div>
+
+  <div class="card mt24"><div class="hd"><div><h3>Task yang dikerjakan</h3>
+    <div class="sm">Setiap baris dihitung 1 jam video</div></div>
+    <div class="r"><button class="btn btn-g btn-sm" onclick="addRow()"><i class="ti ti-plus"></i> Tambah baris</button></div></div>
+    <div class="bd">
+      <div class="rwhd"><div style="text-align:center">No</div><div>Task</div><div>Device</div><div>Powerbank</div><div>Battery</div><div style="text-align:center">Durasi</div><div></div></div>
+      ${F.rows.map((r,i)=>`<div class="rw">
+        <div class="no">${i+1}</div>
+        <div class="cTask"><select onchange="setRow(${i},'task',this.value)"><option value="">Pilih task</option>${opt(TASK.map(t=>t.n),r.task)}</select></div>
+        <div><select onchange="setRow(${i},'device',this.value)"><option value="">Kode</option>${opt(DEVICE[M.cb],r.device)}</select></div>
+        <div class="pbs">
+          <button class="${r.pb===false?'on':''}" onclick="setRow(${i},'pb',false)">Tidak</button>
+          <button class="${r.pb===true?'on y':''}" onclick="setRow(${i},'pb',true)">Ya</button></div>
+        <div class="sfx"><input class="num" inputmode="numeric" maxlength="3" placeholder="0" value="${r.bat}"
+          oninput="setBatRow(${i},this.value)" style="${isNaN(batNum(r.bat))?'border-color:var(--delima-400)':''}"><span>%</span></div>
+        <div class="dur">1 jam</div>
+        <div class="act">
+          <button class="ib" title="Duplikat baris" onclick="dupRow(${i})"><i class="ti ti-copy"></i></button>
+          <button class="ib del" title="Hapus baris" onclick="delRow(${i})"><i class="ti ti-trash"></i></button></div>
+      </div>`).join('')}
+
+      <button class="btn btn-g btnfull mt16" onclick="addRow()"><i class="ti ti-plus"></i> Tambah baris task</button>
+
+      <div class="totbar">
+        <span class="lbl">Total video</span>
+        <span class="val num" id="totVal">${JAM(F.rows.length)}</span>
+      </div>
+      <div id="warnArea">${warnHtml()}</div>
+    </div>
+  </div>
+
+  <div class="grid2 mt24" style="grid-template-columns:1fr 1fr;gap:14px">
+    <button class="btn btn-p btn-lg" id="simpan" disabled onclick="simpanLaporan(false)"><i class="ti ti-check"></i> Simpan laporan</button>
+    <button class="btn btn-g btn-lg" id="simpan2" disabled onclick="simpanLaporan(true)"><i class="ti ti-user-plus"></i> Simpan &amp; buat untuk DCO lain</button>
+  </div>
+  <button class="btn btn-g btnfull mt16" onclick="resetForm();paint()">Kosongkan form</button>`};
+
+function setHead(k,v){S.form[k]=v;paint()}
+function addRow(){S.form.rows.push(blankRow());paint()}
+function delRow(i){S.form.rows.splice(i,1);if(!S.form.rows.length)S.form.rows=[blankRow()];paint()}
+function dupRow(i){S.form.rows.splice(i+1,0,{...S.form.rows[i]});paint()}
+function setRow(i,k,v){S.form.rows[i][k]=v;paint()}
+
+function batNum(v){const t=String(v).trim();if(t==='')return null;
+  if(!/^\d{1,3}$/.test(t))return NaN;const n=+t;return (n>=0&&n<=100)?n:NaN}
+function setBatRow(i,v){S.form.rows[i].bat=String(v).trim();
+  const inp=document.querySelectorAll('.rw .sfx input')[i];
+  if(inp)inp.style.borderColor=isNaN(batNum(v))?'var(--delima-400)':'';
+  refreshTot()}
+
+function rowOk(r){const b=batNum(r.bat);return !!(r.task&&r.device&&r.pb!==null&&b!==null&&!isNaN(b))}
+function formOk(){const F=S.form;return !!(F.tgl&&F.shift&&F.dco&&F.rows.length&&F.rows.every(rowOk))}
+
+function lebihShift(){const sh=shiftOf(S.form.shift);return sh?S.form.rows.length-sh.efektif:0}
+function bentrokDevice(){
+  const F=S.form;const tgl=fmtTgl(F.tgl);const out=[];
+  F.rows.forEach(r=>{if(!r.device)return;
+    LAP.forEach(l=>{if(l.tgl===tgl&&l.shift===F.shift&&l.dco!==F.dco&&l.rows.some(x=>x.device===r.device))
+      {if(!out.some(o=>o.dev===r.device))out.push({dev:r.device,dco:l.dco})}})});
+  return out}
+
+function warnHtml(){
+  const F=S.form;let h='';
+  const kurang=F.rows.filter(r=>!rowOk(r)).length;
+  if(kurang)h+=`<div class="bn b-wait mt16"><b>${kurang} baris belum lengkap.</b> Task, device, powerbank, dan battery wajib diisi di setiap baris.</div>`;
+  const lb=lebihShift();
+  if(F.shift&&lb>0)h+=`<div class="bn b-wait mt16"><b>Total ${F.rows.length} jam melebihi durasi shift ${F.shift} (${shiftOf(F.shift).efektif} jam).</b> Kalau ini memang lembur, laporan tetap bisa disimpan.</div>`;
+  const bt=bentrokDevice();
+  if(bt.length)h+=`<div class="bn b-bad mt16"><b>Device ${bt.map(x=>x.dev).join(', ')} sudah tercatat dipakai ${bt.map(x=>x.dco).join(', ')}</b> pada tanggal dan shift yang sama. Pastikan kode devicenya tidak keliru.</div>`;
+  const kritis=F.rows.filter(r=>{const b=batNum(r.bat);return b!==null&&!isNaN(b)&&b<20}).length;
+  if(kritis)h+=`<div class="bn b-bad mt16"><b>${kritis} baris mencatat baterai di bawah 20%.</b> Device tersebut akan muncul sebagai perhatian khusus di dashboard admin.</div>`;
+  return h}
+
+function refreshTot(){
+  const t=document.getElementById('totVal');if(t)t.textContent=JAM(S.form.rows.length);
+  const w=document.getElementById('warnArea');if(w){w.innerHTML=warnHtml();hydrateIcons()}
+  const ok=formOk();
+  [['simpan','<i class="ti ti-check"></i> Simpan laporan'],['simpan2','<i class="ti ti-user-plus"></i> Simpan &amp; buat untuk DCO lain']]
+    .forEach(([id,lbl])=>{const b=document.getElementById(id);if(!b)return;
+      b.disabled=!ok;b.innerHTML=ok?lbl:'Lengkapi semua kolom dulu'});
+  hydrateIcons()}
+
+function simpanLaporan(lanjut){
+  const F=S.form;const M=me();
+  const id='LP-'+(2402+LAP.length);
+  const rows=F.rows.map(r=>({task:r.task,device:r.device,pb:r.pb,bat:batNum(r.bat)}));
+  LAP.unshift({id,tgl:fmtTgl(F.tgl),jam2:'15:'+String(10+LAP.length).padStart(2,'0'),
+    dco:F.dco,shift:F.shift,spv:M.kode+' - '+M.n,baru:true,rows});
+  const perTask={};
+  rows.forEach(r=>{perTask[r.task]=(perTask[r.task]||0)+1});
+  Object.keys(perTask).forEach(n=>{const t=TASK.find(x=>x.n===n);if(t)t.real+=perTask[n]});
+  const dcoLama=F.dco, jml=rows.length;
+  S.modal=()=>`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal">
+    <div class="bd" style="text-align:center;padding-top:30px">
+      <div class="emb" style="background:var(--panen-50);color:var(--panen-600)"><i class="ti ti-circle-check"></i></div>
+      <h2 style="margin-top:16px">Laporan tersimpan</h2>
+      <p class="sm">${id} · ${dcoLama}</p>
+    </div>
+    <div class="bd" style="padding-top:0;text-align:left">
+      <div class="kv"><span class="k">Shift</span><span class="v">${F.shift}</span></div>
+      <div class="kv"><span class="k">Jumlah task</span><span class="v num">${jml} baris</span></div>
+      <div class="kv"><span class="k">Jam video ditambahkan</span><span class="v num" style="font-weight:600;color:var(--panen-700)">+${JAM(jml)}</span></div>
+      ${Object.keys(perTask).map(n=>{const t=TASK.find(x=>x.n===n);
+        return t?`<div class="kv"><span class="k">${n}</span><span class="v num">${JAM(t.real)} dari ${t.target} jam</span></div>`:''}).join('')}
+      <div class="bn b-ok mt16">Data langsung masuk ke rekap CMS dan terhitung di dashboard analitik admin.</div>
+    </div>
+    <div class="ft"><button class="btn btn-g" onclick="closeModal();go('riwayat')">Lihat riwayat</button>
+      <button class="btn btn-p" onclick="closeModal();lanjutDCO(${lanjut?'true':'false'})">${lanjut?'Lanjut ke DCO berikutnya':'Selesai'}</button></div>
+  </div></div>`;
+  resetForm(lanjut);paint();
+}
+function lanjutDCO(l){closeModal();if(l){S.sc='buat';paint()}else{go('home')}}
+
+/* ---------- RIWAYAT ---------- */
+V.riwayat=()=>{
+  if(S.sel)return lapDetail();
+  let rows=LAP;
+  if(S.q)rows=rows.filter(r=>(r.dco+r.rows.map(x=>x.task+x.device).join('')).toLowerCase().includes(S.q.toLowerCase()));
+  if(S.fTask!=='Semua')rows=rows.filter(r=>r.rows.some(x=>x.task===S.fTask));
+  return `
+  <h1>Riwayat Laporan</h1>
+  <p class="lede">Semua laporan yang pernah kamu input, urut dari yang terbaru.</p>
+  <div class="tools mt24">
+    <div class="search"><i class="ti ti-search"></i><input placeholder="Cari DCO, task, atau kode device" value="${S.q}" oninput="S.q=this.value;paint()"></div>
+    <input type="date" value="2026-09-01" style="width:auto;min-width:150px">
+    <span class="sm">sampai</span>
+    <input type="date" value="2026-09-29" style="width:auto;min-width:150px">
+    <select style="width:auto;min-width:200px" onchange="S.fTask=this.value;paint()">
+      ${['Semua',...TASK.map(t=>t.n)].map(x=>`<option ${S.fTask===x?'selected':''}>${x}</option>`).join('')}</select>
+  </div>
+  <div class="card">
+   ${rows.length?rows.map(l=>`<div class="lrow" onclick="S.sel='${l.id}';paint()">
+      <div class="ic"><i class="ti ti-clipboard-list"></i></div>
+      <div class="mid"><div class="t1">${l.dco}</div>
+        <div class="t2">${l.tgl} ${l.jam2} · shift ${l.shift} · ${l.rows.length} task · ${[...new Set(l.rows.map(r=>r.device))].join(', ')}</div></div>
+      <div class="rt"><div class="j num">${JAM(jamLap(l))}</div>
+        <div class="sm" style="margin-top:4px">${l.id}</div></div>
+      <i class="ti ti-chevron-right" style="font-size:20px;color:var(--kabut-400)"></i>
+    </div>`).join('')
+   :`<div class="empty"><i class="ti ti-clipboard-list"></i>
+     <h3 style="margin-top:12px">Tidak ada laporan yang cocok</h3>
+     <p class="sm mt8">Coba ubah filter atau kata pencarian.</p>
+     <button class="btn btn-g mt16" onclick="S.q='';S.fTask='Semua';paint()">Reset filter</button></div>`}
+  </div>`};
+
+function lapDetail(){
+  const l=LAP.find(x=>x.id===S.sel);const M=me();const sh=shiftOf(l.shift);
+  const perTask={};l.rows.forEach(r=>{perTask[r.task]=(perTask[r.task]||0)+1});
+  return `
+  <button class="btn btn-g btn-sm" onclick="S.sel=null;paint()"><i class="ti ti-arrow-left"></i> Kembali ke riwayat</button>
+  <div style="display:flex;align-items:flex-end;gap:16px;flex-wrap:wrap;margin-top:18px">
+    <div><h2>${l.dco}</h2><p class="lede" style="margin-top:4px">${l.id} · diinput ${l.tgl} pukul ${l.jam2}</p></div>
+    <div style="margin-left:auto">${l.baru?pill('run','Masih bisa diedit'):pill('off','Lewat 24 jam')}</div>
+  </div>
+
+  <div class="hdcard mt24">
+    <div class="grid2" style="grid-template-columns:repeat(4,1fr);gap:18px">
+      <div><div class="sm">Tanggal</div><div style="font-weight:600;margin-top:3px">${l.tgl}</div></div>
+      <div><div class="sm">Shift</div><div style="font-weight:600;margin-top:3px">${l.shift}${sh?` (${sh.jam})`:''}</div></div>
+      <div><div class="sm">Supervisor</div><div style="font-weight:600;margin-top:3px">${l.spv||M.kode+' - '+M.n}</div></div>
+      <div><div class="sm">Nama DCO</div><div style="font-weight:600;margin-top:3px">${l.dco}</div></div>
+    </div>
+  </div>
+
+  <div class="card mt24"><div class="hd"><div><h3>Baris task</h3>
+    <div class="sm">${l.rows.length} task · setiap baris dihitung 1 jam</div></div></div>
+    <div class="bd">
+      <div class="tkhd"><div style="text-align:center">No</div><div>Task</div><div>Device</div><div>Powerbank</div><div>Battery</div></div>
+      ${l.rows.map((r,i)=>`<div class="tk">
+        <div class="num" style="text-align:center;color:var(--ink3);font-weight:600">${i+1}</div>
+        <div style="font-weight:500">${r.task}</div>
+        <div class="num">${r.device}</div>
+        <div>${r.pb?pill('wait','Ya'):pill('off','Tidak')}</div>
+        <div>${batPill(r.bat)}</div>
+      </div>`).join('')}
+      <div class="totbar"><span class="lbl">Total video</span><span class="val num">${JAM(jamLap(l))}</span></div>
+      ${sh&&l.rows.length>sh.efektif?`<div class="bn b-wait mt16">Total melebihi durasi efektif shift ${l.shift} (${sh.efektif} jam).</div>`:''}
+    </div>
+  </div>
+
+  <div class="grid2 mt24">
+    <div class="card"><div class="hd"><h3>Kontribusi ke target</h3></div><div class="bd">
+      ${Object.keys(perTask).map(n=>{const t=TASK.find(x=>x.n===n);if(!t)return '';
+        const p=Math.round(t.real/t.target*100);
+        return `<div style="padding:10px 0;border-bottom:1px solid var(--kabut-100)">
+          <div style="display:flex;gap:12px;align-items:baseline">
+            <div style="flex:1;font-weight:500;font-size:15px">${n}</div>
+            <div class="num" style="font-weight:600;color:var(--panen-700)">+${JAM(perTask[n])}</div></div>
+          <div style="height:16px;border-radius:6px;background:var(--kabut-100);overflow:hidden;margin-top:8px">
+            <i style="display:block;height:100%;width:${Math.min(100,p)}%;background:var(--nila-500);border-radius:6px"></i></div>
+          <div class="sm" style="margin-top:5px">${JAM(t.real)} dari ${t.target} jam · ${p}%</div>
+        </div>`}).join('')}
+    </div></div>
+
+    <div>
+      ${l.baru
+        ?`<button class="btn btn-g btnfull" onclick="toast('Membuka form edit laporan ${l.id}.','info')"><i class="ti ti-edit"></i> Edit laporan ini</button>
+          <div class="bn b-wait mt16"><b>Batas edit 24 jam.</b> Selama masa ini kamu bisa menambah, mengubah, atau menghapus baris task. Lewat dari itu, perubahan harus diajukan ke Admin Cabang. Setiap perubahan tercatat di audit log.</div>`
+        :`<div class="bn b-info"><b>Sudah lewat 24 jam.</b> Laporan ini tidak bisa kamu edit sendiri. Ajukan perubahan ke Admin Cabang kalau ada yang keliru.</div>
+          <button class="btn btn-g btnfull mt16" onclick="toast('Mengajukan permintaan koreksi ke Admin Cabang.','info')"><i class="ti ti-mail"></i> Ajukan koreksi ke admin</button>`}
+      <div class="card mt24"><div class="hd"><h3>Ringkasan device</h3></div><div class="bd">
+        ${[...new Set(l.rows.map(r=>r.device))].map(d=>{const rs=l.rows.filter(r=>r.device===d);
+          const pb=rs.filter(r=>r.pb).length;
+          return `<div class="kv"><span class="k">Device ${d}</span><span class="v num">${rs.length} task${pb?` · ${pb} pakai powerbank`:''}</span></div>`}).join('')}
+      </div></div>
+    </div>
+  </div>`}
+
+/* ---------- PROFIL ---------- */
+V.profil=()=>{const M=me();const ini=M.n.split(' ').map(x=>x[0]).slice(0,2).join('');
+ return `
+  <h1>Profil</h1>
+  <p class="lede">Data akun dan keamanan.</p>
+  <div class="grid2 mt24">
+    <div class="card"><div class="hd"><h3>Data diri</h3></div><div class="bd">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:22px">
+        <div style="width:64px;height:64px;border-radius:18px;background:var(--nila-50);color:var(--nila-700);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">${ini}</div>
+        <div><div style="font-size:20px;font-weight:700;letter-spacing:-.02em">${M.n}</div>
+          <div class="sm">${M.r}</div>
+          <button class="btn btn-g btn-sm" style="margin-top:10px" onclick="toast('Memilih foto profil baru.','info')"><i class="ti ti-camera"></i> Ubah foto</button></div>
+      </div>
+      <div class="kv"><span class="k">Kode pegawai</span><span class="v num">${M.kode}</span></div>
+      <div class="kv"><span class="k">Nama lengkap</span><span class="v">${M.n}</span></div>
+      <div class="kv"><span class="k">Email</span><span class="v">${M.email}</span></div>
+      <div class="kv"><span class="k">Nomor telepon</span><span class="v num">0852-7777-8888</span></div>
+      <div class="kv"><span class="k">Cabang penempatan</span><span class="v">${M.cb}</span></div>
+      <div class="kv"><span class="k">Platform yang bisa dibuka</span><span class="v">${M.admin?'Input Laporan + Konsol Admin':'Input Laporan'}</span></div>
+      <div class="bn b-info mt16">Nama, email, dan cabang penempatan hanya bisa diubah oleh Super Admin. Hubungi admin kalau ada yang keliru.</div>
+    </div></div>
+
+    <div>
+      <div class="card"><div class="hd"><h3>Ubah password</h3></div><div class="bd">
+        <div class="f"><label>Password lama</label><input type="password" placeholder="Masukkan password saat ini"></div>
+        <div class="f"><label>Password baru</label><input type="password" placeholder="Minimal 8 karakter"></div>
+        <div class="f" style="margin-bottom:20px"><label>Ulangi password baru</label><input type="password" placeholder="Ketik ulang password baru"></div>
+        <button class="btn btn-p btnfull" onclick="toast('Password diperbarui. Sesi lain otomatis keluar.','ok')"><i class="ti ti-key"></i> Perbarui password</button>
+      </div></div>
+
+      <div class="card mt24"><div class="hd"><h3>Ringkasan kerja</h3></div><div class="bd">
+        <div class="kv"><span class="k">Total laporan diinput</span><span class="v num">${LAP.length*7}</span></div>
+        <div class="kv"><span class="k">Total jam video tercatat</span><span class="v num">${JAM(94)}</span></div>
+        <div class="kv"><span class="k">DCO yang diawasi</span><span class="v num">${DCO[M.cb].length} orang</span></div>
+        <div class="kv"><span class="k">Bergabung sejak</span><span class="v">12 Mei 2026</span></div>
+      </div></div>
+    </div>
+  </div>`};
+
+paint();
+</script>
+</body>
+</html>

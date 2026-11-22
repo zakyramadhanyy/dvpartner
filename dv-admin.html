@@ -1,0 +1,1164 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>DCOTRACK — Konsol Admin</title>
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Urbanist:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+:root{
+--nila-50:#F1F3FD;--nila-100:#DEE3F9;--nila-200:#BDC6F1;--nila-300:#94A2E6;--nila-400:#6C7DD6;
+--nila-500:#4B5CC0;--nila-600:#3945A2;--nila-700:#2C3684;--nila-800:#232B66;--nila-900:#171D47;
+--kabut-50:#FAFAF8;--kabut-100:#F3F3EF;--kabut-200:#E7E7E1;--kabut-300:#D3D3CA;--kabut-400:#A9A99F;
+--kabut-500:#7D7D74;--kabut-600:#5D5D56;--kabut-700:#454540;--kabut-800:#2E2E2A;--kabut-900:#1A1A17;
+--panen-50:#EBF8F0;--panen-100:#D0EFDD;--panen-200:#A2E0BB;--panen-400:#37AC6F;--panen-500:#1B8E56;--panen-600:#137144;--panen-700:#0F5936;--panen-800:#0B4228;
+--senja-50:#FEF6E6;--senja-100:#FCE8C0;--senja-200:#F8D188;--senja-400:#DD941F;--senja-500:#BB7A14;--senja-600:#96610E;--senja-700:#754B0B;--senja-800:#553608;
+--delima-50:#FDEDED;--delima-100:#FAD4D4;--delima-200:#F3AAAA;--delima-400:#D94A4A;--delima-500:#BF3131;--delima-600:#9C2525;--delima-700:#7B1D1D;--delima-800:#5B1515;
+--f:'Urbanist',system-ui,-apple-system,sans-serif;
+--ink:var(--kabut-900);--ink2:var(--kabut-600);--ink3:var(--kabut-500);
+--line:#EDEDE8;--lineIn:#DFDFD9;--page:#FBFBFA;--sd:var(--nila-900);
+}
+*{box-sizing:border-box;margin:0;padding:0;-webkit-tap-highlight-color:transparent}
+html{-webkit-font-smoothing:antialiased;text-rendering:optimizeLegibility}
+body{font-family:var(--f);font-size:16px;font-weight:400;line-height:1.55;color:var(--ink);background:#E9EBF2;padding:20px;min-height:100vh}
+.num{font-variant-numeric:tabular-nums;letter-spacing:-.01em}
+i.ti{display:inline-flex;align-items:center;justify-content:center;width:1em;height:1em;line-height:0;flex:none}
+i.ti svg{width:100%;height:100%;display:block}
+
+/* demo */
+.demo{max-width:1440px;margin:0 auto 14px;display:flex;align-items:center;gap:10px;flex-wrap:wrap;padding:0 4px}
+.demo b{font-size:14px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--nila-800);opacity:.6}
+.demo button{font-family:var(--f);font-size:14px;font-weight:500;padding:7px 14px;border:1px solid rgba(23,29,71,.12);background:rgba(255,255,255,.6);border-radius:999px;cursor:pointer;color:var(--nila-800);transition:all .15s}
+.demo button:hover{background:#fff}
+.demo button.on{background:var(--nila-900);border-color:var(--nila-900);color:#fff;font-weight:600}
+.demo span{font-size:14px;color:var(--nila-800);opacity:.55;margin-left:auto}
+
+/* shell */
+.app{max-width:1440px;margin:0 auto;display:flex;background:#fff;border-radius:24px;overflow:hidden;min-height:calc(100vh - 96px);box-shadow:0 24px 70px rgba(23,29,71,.13),0 2px 6px rgba(23,29,71,.05)}
+.side{width:252px;flex:none;background:var(--sd);padding:22px 14px 18px;display:flex;flex-direction:column}
+.brand{display:flex;align-items:center;gap:11px;padding:0 8px 18px}
+.brand .lg{width:36px;height:36px;flex:none;border-radius:11px;background:rgba(255,255,255,.12);color:#fff;display:flex;align-items:center;justify-content:center;font-size:20px}
+.brand .nm{font-size:18px;font-weight:700;letter-spacing:-.02em;color:#fff;line-height:1.2}
+.brand .sb{font-size:14px;color:rgba(255,255,255,.45);line-height:1.2}
+.sfind{display:flex;align-items:center;gap:9px;padding:10px 12px;border-radius:11px;background:rgba(255,255,255,.08);color:rgba(255,255,255,.55);font-size:16px;cursor:pointer}
+.sfind:hover{background:rgba(255,255,255,.13)}
+.sfind i{font-size:20px}
+.sfind .k{margin-left:auto;font-size:14px;font-weight:500;padding:2px 7px;border-radius:6px;background:rgba(255,255,255,.1)}
+.navgrp{font-size:14px;font-weight:500;letter-spacing:.09em;text-transform:uppercase;color:rgba(255,255,255,.35);padding:18px 12px 6px}
+.side a{position:relative;display:flex;align-items:center;gap:12px;padding:10px 12px;border-radius:11px;color:rgba(255,255,255,.68);text-decoration:none;font-size:16px;font-weight:400;cursor:pointer;margin-bottom:2px;transition:background .15s,color .15s}
+.side a i{font-size:20px;flex:none}
+.side a:hover{background:rgba(255,255,255,.07);color:#fff}
+.side a.on{background:rgba(255,255,255,.11);color:#fff;font-weight:600}
+.side a.on::after{content:"";position:absolute;right:0;top:50%;transform:translateY(-50%);width:3px;height:20px;border-radius:3px 0 0 3px;background:var(--nila-300)}
+.side a.off{opacity:.28;cursor:not-allowed}
+.side a.off:hover{background:transparent;color:rgba(255,255,255,.68)}
+.side .foot{margin-top:auto;padding-top:16px}
+.swbtn{display:flex;align-items:center;gap:10px;width:100%;padding:11px 12px;border-radius:11px;border:1px solid rgba(255,255,255,.18);background:rgba(255,255,255,.06);color:#fff;font-family:var(--f);font-size:14px;font-weight:600;cursor:pointer;margin-bottom:10px;text-align:left}
+.swbtn:hover{background:rgba(255,255,255,.14)}
+.swbtn i{font-size:18px;color:var(--nila-300)}
+.ucard{display:flex;align-items:center;gap:11px;padding:10px;border-radius:13px;background:rgba(255,255,255,.08)}
+.ucard .av{width:36px;height:36px;flex:none;border-radius:10px;background:var(--nila-300);color:var(--nila-900);display:flex;align-items:center;justify-content:center;font-size:16px;font-weight:700}
+.ucard .un{font-size:16px;font-weight:600;color:#fff;line-height:1.25;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.ucard .ur{font-size:14px;color:rgba(255,255,255,.5);line-height:1.3}
+.ucard .out{margin-left:auto;width:30px;height:30px;flex:none;border:0;background:transparent;color:rgba(255,255,255,.55);border-radius:8px;cursor:pointer;font-size:18px}
+.ucard .out:hover{background:rgba(255,255,255,.12);color:#fff}
+
+.main{flex:1;min-width:0;background:var(--page);display:flex;flex-direction:column}
+.top{background:#fff;border-bottom:1px solid var(--line);padding:20px 28px;display:flex;align-items:center;gap:18px;flex-wrap:wrap;position:sticky;top:0;z-index:20}
+.top h1{font-size:24px;font-weight:700;letter-spacing:-.025em;line-height:1.25}
+.top .sub{font-size:16px;font-weight:300;color:var(--ink3);margin-top:2px}
+.top .act{margin-left:auto;display:flex;gap:10px;align-items:center}
+.body{padding:24px 28px 44px;animation:fade .2s ease}
+@keyframes fade{from{opacity:0;transform:translateY(5px)}to{opacity:1;transform:none}}
+
+.btn{font-family:var(--f);font-size:16px;font-weight:600;padding:11px 20px;min-height:46px;border-radius:11px;border:1px solid transparent;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;gap:8px;line-height:1.2;transition:background .15s,border-color .15s}
+.btn i{font-size:19px}
+.btn-p{background:var(--nila-900);color:#fff}.btn-p:hover{background:var(--nila-800)}
+.btn-g{background:#fff;color:var(--kabut-700);border-color:var(--lineIn)}.btn-g:hover{border-color:var(--kabut-400);background:var(--kabut-50)}
+.btn-ok{background:var(--panen-600);color:#fff}.btn-ok:hover{background:var(--panen-700)}
+.btn-bad{background:#fff;color:var(--delima-600);border-color:var(--delima-200)}.btn-bad:hover{background:var(--delima-50)}
+.btn-sm{font-size:14px;padding:8px 14px;min-height:38px;border-radius:9px}.btn-sm i{font-size:17px}
+.btn[disabled]{background:var(--kabut-100);color:var(--kabut-400);border-color:transparent;cursor:not-allowed}
+
+.card{background:#fff;border:1px solid var(--line);border-radius:18px;overflow-x:auto}
+.card .hd{padding:18px 22px;border-bottom:1px solid var(--line);display:flex;align-items:center;gap:14px;flex-wrap:wrap}
+.card .hd h3{font-size:18px;font-weight:600;letter-spacing:-.015em}
+.card .hd .r{margin-left:auto;display:flex;gap:10px;align-items:center}
+.card .bd{padding:22px}
+.grid4{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+.mt16{margin-top:16px}.mt24{margin-top:24px}
+
+.q{background:#fff;border:1px solid var(--line);border-radius:18px;padding:18px 20px}
+.qh{display:flex;align-items:flex-start;gap:12px}
+.q .lb{font-size:14px;font-weight:500;letter-spacing:.07em;text-transform:uppercase;color:var(--ink3);line-height:1.4}
+.q .ic{margin-left:auto;width:38px;height:38px;flex:none;border-radius:11px;display:flex;align-items:center;justify-content:center;font-size:20px}
+.q .n{font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.15;margin-top:8px}
+.q .ft{margin-top:14px;padding-top:12px;border-top:1px solid var(--line);font-size:14px;color:var(--ink3);font-weight:300}
+.q .ft b{font-weight:600;color:var(--kabut-700)}
+.delta{display:inline-flex;align-items:center;gap:4px;font-size:14px;font-weight:600;padding:3px 10px;border-radius:999px}
+.d-up{background:var(--panen-50);color:var(--panen-700)}
+.d-down{background:var(--delima-50);color:var(--delima-600)}
+
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-size:14px;font-weight:500;letter-spacing:.06em;text-transform:uppercase;color:var(--ink3);padding:13px 18px;border-bottom:1px solid var(--line);background:#fff;white-space:nowrap;position:sticky;top:0;z-index:2}
+td{padding:13px 18px;border-bottom:1px solid var(--kabut-100);vertical-align:middle;font-size:16px}
+tbody tr:last-child td{border-bottom:0}
+tbody tr.click{cursor:pointer;transition:background .12s}
+tbody tr.click:hover{background:var(--nila-50)}
+.nm{font-weight:600;letter-spacing:-.01em}
+.sm{font-size:14px;font-weight:300;color:var(--ink3)}
+.mono{font-variant-numeric:tabular-nums}
+
+.pill{display:inline-flex;align-items:center;gap:7px;font-size:14px;font-weight:600;padding:4px 12px;border-radius:999px;white-space:nowrap;border:1px solid transparent;line-height:1.45}
+.pill::before{content:"";width:6px;height:6px;border-radius:50%;background:currentColor;flex:none}
+.s-ok{background:var(--panen-50);color:var(--panen-800);border-color:var(--panen-100)}
+.s-wait{background:var(--senja-50);color:var(--senja-800);border-color:var(--senja-100)}
+.s-bad{background:var(--delima-50);color:var(--delima-800);border-color:var(--delima-100)}
+.s-run{background:var(--nila-50);color:var(--nila-800);border-color:var(--nila-100)}
+.s-off{background:var(--kabut-100);color:var(--kabut-700);border-color:var(--kabut-200)}
+
+.tools{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-bottom:16px}
+.search{position:relative;flex:1;min-width:210px;max-width:320px}
+.search i{position:absolute;left:15px;top:50%;transform:translateY(-50%);color:var(--ink3);font-size:19px}
+.search input{width:100%;padding-left:44px}
+select,input,textarea{font-family:var(--f);font-size:16px;font-weight:400;padding:11px 15px;min-height:46px;border:1px solid var(--lineIn);border-radius:11px;background:#fff;color:var(--ink)}
+textarea{min-height:0;line-height:1.55}
+input::placeholder,textarea::placeholder{color:var(--kabut-400);font-weight:300}
+input:focus,select:focus,textarea:focus{outline:2px solid var(--nila-300);outline-offset:1px;border-color:var(--nila-500)}
+select[disabled],input[disabled]{background:var(--kabut-100);color:var(--kabut-500);cursor:not-allowed}
+.f{margin-bottom:16px}
+.f label{display:block;font-size:14px;font-weight:600;color:var(--kabut-700);margin-bottom:7px}
+.f input,.f select,.f textarea{width:100%}
+.f .h{font-size:14px;font-weight:300;color:var(--ink3);margin-top:7px;line-height:1.5}
+.f2{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sfx{position:relative}.sfx input{padding-right:70px}
+.sfx span{position:absolute;right:16px;top:50%;transform:translateY(-50%);font-size:14px;font-weight:500;color:var(--ink3);pointer-events:none}
+
+.kv{display:flex;justify-content:space-between;gap:18px;padding:11px 0;border-bottom:1px solid var(--kabut-100);min-height:48px;align-items:center}
+.kv:last-child{border-bottom:0}.kv:first-child{padding-top:0}
+.kv .k{font-size:16px;font-weight:300;color:var(--ink2)}
+.kv .v{font-size:16px;font-weight:500;text-align:right}
+
+.bn{border-radius:13px;padding:14px 17px;font-size:16px;font-weight:300;line-height:1.55;border:1px solid}
+.bn b{font-weight:600}
+.b-info{background:var(--nila-50);color:var(--nila-800);border-color:var(--nila-100)}
+.b-wait{background:var(--senja-50);color:var(--senja-800);border-color:var(--senja-100)}
+.b-bad{background:var(--delima-50);color:var(--delima-800);border-color:var(--delima-100)}
+.b-ok{background:var(--panen-50);color:var(--panen-800);border-color:var(--panen-100)}
+
+.chips{display:flex;gap:8px;flex-wrap:wrap}
+.chip{font-family:var(--f);font-size:14px;font-weight:500;padding:9px 15px;border-radius:999px;border:1px solid var(--lineIn);background:#fff;color:var(--kabut-700);cursor:pointer}
+.chip:hover{border-color:var(--kabut-400)}
+.chip.on{background:var(--nila-900);border-color:var(--nila-900);color:#fff;font-weight:600}
+
+/* grafik */
+.prow{display:flex;align-items:center;gap:14px;padding:12px 0;border-bottom:1px solid var(--kabut-100)}
+.prow:last-child{border-bottom:0}
+.prow .pn{width:150px;flex:none;font-size:16px;font-weight:500}
+.prow .pb{flex:1;height:26px;border-radius:8px;background:var(--kabut-100);position:relative;overflow:hidden}
+.prow .pb i{position:absolute;inset:0 auto 0 0;border-radius:8px;display:block}
+.prow .pb .tg{position:absolute;top:-3px;bottom:-3px;width:2px;background:var(--kabut-500);border-radius:2px}
+.prow .pv{width:132px;flex:none;text-align:right;font-size:14px;font-weight:600}
+.prow .pv small{display:block;font-size:14px;font-weight:300;color:var(--ink3)}
+.bar-ok{background:var(--panen-500)}.bar-wait{background:var(--senja-400)}.bar-bad{background:var(--delima-400)}.bar-run{background:var(--nila-500)}
+.legend{display:flex;gap:16px;flex-wrap:wrap;font-size:14px;color:var(--ink2);margin-top:14px}
+.legend span{display:inline-flex;align-items:center;gap:7px}
+.legend i{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+.empty{text-align:center;padding:52px 24px}
+.empty i{font-size:40px;color:var(--kabut-300)}
+h2{font-size:18px;font-weight:600;letter-spacing:-.015em;margin-bottom:12px}
+
+.scrim{position:fixed;inset:0;background:rgba(23,29,71,.42);backdrop-filter:blur(3px);display:flex;align-items:center;justify-content:center;z-index:80;padding:28px;animation:fade .16s ease}
+.modal{background:#fff;border-radius:22px;width:100%;max-width:560px;max-height:88vh;overflow-y:auto;box-shadow:0 30px 80px rgba(23,29,71,.3)}
+.modal .hd{padding:24px 26px 18px;border-bottom:1px solid var(--line)}
+.modal .hd h3{font-size:20px;font-weight:700;letter-spacing:-.02em}
+.modal .bd{padding:24px 26px}
+.modal .ft{padding:18px 26px;border-top:1px solid var(--line);display:flex;gap:10px;justify-content:flex-end;flex-wrap:wrap}
+
+.toast{position:fixed;left:50%;bottom:28px;transform:translate(-50%,90px);background:var(--nila-900);color:#fff;font-size:16px;font-weight:500;padding:14px 22px;border-radius:999px;z-index:120;display:flex;align-items:center;gap:10px;box-shadow:0 14px 40px rgba(23,29,71,.35);transition:transform .26s cubic-bezier(.2,.9,.3,1);max-width:min(560px,90vw)}
+.toast.on{transform:translate(-50%,0)}
+.toast i{font-size:20px;flex:none}
+
+@media(max-width:1180px){.grid4{grid-template-columns:repeat(2,1fr)}.grid2{grid-template-columns:1fr}}
+@media(max-width:900px){body{padding:10px}.app{border-radius:18px}
+ .side{width:80px}.side .lbl,.side .navgrp,.side .nm,.side .sb,.side .sfind .k,.side .un,.side .ur,.side .out,.swbtn span{display:none}
+ .side a,.side .sfind,.swbtn{justify-content:center;padding:11px 0}.side .brand,.side .ucard{justify-content:center;padding-left:0}
+ .top,.body{padding-left:16px;padding-right:16px}}
+@media(prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+</style>
+</head>
+<body>
+
+<div class="demo">
+  <b>Masuk sebagai</b>
+  <button id="r-super" onclick="setRole('super')">Super Admin</button>
+  <button id="r-admin" onclick="setRole('admin')">Admin Cabang</button>
+  <button id="r-dual" onclick="setRole('dual')">Admin + SPV</button>
+  <button onclick="S.sc='login';paint()">Layar login</button>
+  <span>Menu di luar wewenang tampil redup</span>
+</div>
+
+<div id="root"></div>
+<div class="toast" id="toast"></div>
+
+<script>
+/* ---- set ikon SVG tertanam, tanpa ketergantungan CDN ---- */
+const ICONS={
+_:'<circle cx="12" cy="12" r="3" fill="currentColor" stroke="none"/>',
+'alert-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 8v4"/><path d="M12 16h.01"/>',
+'alert-triangle':'<path d="M10.3 4.3 2.8 17a2 2 0 0 0 1.7 3h15a2 2 0 0 0 1.7-3L13.7 4.3a2 2 0 0 0-3.4 0z"/><path d="M12 9v4"/><path d="M12 17h.01"/>',
+'arrow-down':'<path d="M12 5v14"/><path d="M18 13l-6 6l-6-6"/>',
+'arrow-down-right':'<path d="M7 7l10 10"/><path d="M17 8v9h-9"/>',
+'arrow-left':'<path d="M19 12H5"/><path d="M11 18l-6-6l6-6"/>',
+'arrow-right':'<path d="M5 12h14"/><path d="M13 6l6 6l-6 6"/>',
+'arrow-up-right':'<path d="M7 17l10-10"/><path d="M8 7h9v9"/>',
+'arrows-exchange':'<path d="M7 10h13"/><path d="M17 7l3 3l-3 3"/><path d="M17 17H4"/><path d="M7 14l-3 3l3 3"/>',
+battery:'<rect x="2" y="7" width="16" height="10" rx="2.5"/><path d="M20.5 11v2"/><path d="M5 10.5v3"/><path d="M8 10.5v3"/>',
+'battery-off':'<rect x="2" y="7" width="16" height="10" rx="2.5"/><path d="M20.5 11v2"/><path d="M5 10.5v3"/><path d="M3 4l18 16"/>',
+bolt:'<path d="M13 3L5 13.5h6L10.5 21L19 10.5h-6z"/>',
+building:'<path d="M4 21V5a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v16"/><path d="M16 9h2a2 2 0 0 1 2 2v10"/><path d="M2.5 21h19"/><path d="M8 7h4"/><path d="M8 11h4"/><path d="M8 15h4"/>',
+calendar:'<rect x="4" y="5" width="16" height="16" rx="2.5"/><path d="M16 3v4"/><path d="M8 3v4"/><path d="M4 11h16"/>',
+camera:'<path d="M5 7h1.5l1.5-2.5h8L17.5 7H19a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V9a2 2 0 0 1 2-2z"/><circle cx="12" cy="13" r="3.4"/>',
+'chart-bar':'<path d="M3.5 20.5h17"/><rect x="5" y="11" width="3.6" height="7" rx="1"/><rect x="10.2" y="6.5" width="3.6" height="11.5" rx="1"/><rect x="15.4" y="13.5" width="3.6" height="4.5" rx="1"/>',
+'chart-donut':'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="3.5"/><path d="M12 3.5v5"/><path d="M19.6 15.2l-4.6-1.9"/>',
+'chart-line':'<path d="M3.5 20.5h17"/><path d="M5 16l4.5-5l3.5 3l5.5-7"/>',
+check:'<path d="M5 12.5l5 5L20 7"/>',
+checks:'<path d="M3 12.5l3.5 3.5l6-6"/><path d="M11.5 16l2 2l7-7"/>',
+'chevron-down':'<path d="M6 9l6 6l6-6"/>',
+'chevron-right':'<path d="M9 6l6 6l-6 6"/>',
+'circle-check':'<circle cx="12" cy="12" r="9"/><path d="M8.5 12.5l2.5 2.5l4.5-4.5"/>',
+'clipboard-list':'<path d="M9.5 4.5H7A2 2 0 0 0 5 6.5v13A2 2 0 0 0 7 21.5h10a2 2 0 0 0 2-2v-13a2 2 0 0 0-2-2h-2.5"/><rect x="9" y="2.5" width="6" height="4" rx="1.5"/><path d="M9 12h6"/><path d="M9 16h4"/>',
+clock:'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/>',
+'clock-hour':'<circle cx="12" cy="12" r="9"/><path d="M12 7v5l3.5 2"/><path d="M12 3v1.5"/><path d="M21 12h-1.5"/>',
+database:'<ellipse cx="12" cy="6" rx="8" ry="3.2"/><path d="M4 6v12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2V6"/><path d="M4 12c0 1.8 3.6 3.2 8 3.2s8-1.4 8-3.2"/>',
+'device-camera':'<rect x="5" y="2.5" width="14" height="19" rx="3"/><circle cx="12" cy="11" r="3.2"/><path d="M10 6h4"/><path d="M10.5 18.5h3"/>',
+'device-mobile':'<rect x="7" y="2.5" width="10" height="19" rx="2.5"/><path d="M11 18h2"/>',
+download:'<path d="M4 16.5v2.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5"/><path d="M7.5 11l4.5 4.5l4.5-4.5"/><path d="M12 3v12.5"/>',
+edit:'<path d="M4 20.5h4.5L19 10a2.3 2.3 0 0 0-3.2-3.2L5 17.3z"/><path d="M14.5 7.5l3.2 3.2"/>',
+eye:'<path d="M2.5 12S6 5.5 12 5.5S21.5 12 21.5 12S18 18.5 12 18.5S2.5 12 2.5 12z"/><circle cx="12" cy="12" r="3"/>',
+filter:'<path d="M3.5 5h17l-6.5 7.6V20l-4 1.5v-8.9z"/>',
+help:'<circle cx="12" cy="12" r="9"/><path d="M12 17.5h.01"/><path d="M9.8 9.5a2.3 2.3 0 1 1 2.6 3.1v1.2"/>',
+history:'<path d="M4 12a8.5 8.5 0 1 0 2.6-6.1"/><path d="M3.5 3.5v5h5"/><path d="M12 8v4.3l3 1.8"/>',
+'info-circle':'<circle cx="12" cy="12" r="9"/><path d="M12 8h.01"/><path d="M11 12h1v5h1"/>',
+key:'<circle cx="8" cy="15" r="4"/><path d="M11 12.5L20 3.5"/><path d="M17 6.5l2.5 2.5"/><path d="M15 8.5l2.5 2.5"/>',
+'layout-dashboard':'<rect x="3.5" y="3.5" width="7.5" height="9.5" rx="2"/><rect x="3.5" y="16" width="7.5" height="4.5" rx="2"/><rect x="13.5" y="3.5" width="7" height="4.5" rx="2"/><rect x="13.5" y="11" width="7" height="9.5" rx="2"/>',
+'layout-sidebar':'<rect x="3.5" y="4" width="17" height="16" rx="3"/><path d="M10 4v16"/><path d="M15.5 10l-2 2l2 2"/>',
+lock:'<rect x="4.5" y="10.5" width="15" height="10.5" rx="3"/><path d="M8 10.5V7a4 4 0 1 1 8 0v3.5"/>',
+logout:'<path d="M14 8.5V6.5a2.5 2.5 0 0 0-2.5-2.5H6A2.5 2.5 0 0 0 3.5 6.5v11A2.5 2.5 0 0 0 6 20h5.5a2.5 2.5 0 0 0 2.5-2.5v-2"/><path d="M20.5 12H10"/><path d="M17.5 9l3 3l-3 3"/>',
+mail:'<rect x="3" y="5" width="18" height="14" rx="2.5"/><path d="M3.5 7.5l8.5 6l8.5-6"/>',
+minus:'<path d="M5 12h14"/>',
+'note-plus':'<path d="M14 3.5H6.5A2 2 0 0 0 4.5 5.5v13a2 2 0 0 0 2 2h8"/><path d="M8.5 8.5h6"/><path d="M8.5 12.5h4"/><path d="M18 14v7"/><path d="M14.5 17.5h7"/>',
+phone:'<path d="M5 3.5h3.2l1.6 4l-2 1.2a11 11 0 0 0 5.5 5.5l1.2-2l4 1.6V17a2.5 2.5 0 0 1-2.7 2.5C9.3 18.9 5.1 14.7 4.5 6.2A2.5 2.5 0 0 1 5 3.5z"/>',
+'player-play':'<path d="M8 5.2v13.6a.6.6 0 0 0 .92.5l10.6-6.8a.6.6 0 0 0 0-1l-10.6-6.8A.6.6 0 0 0 8 5.2z" fill="currentColor" stroke="none"/>',
+plus:'<path d="M12 5v14"/><path d="M5 12h14"/>',
+point:'<circle cx="12" cy="12" r="3.2" fill="currentColor" stroke="none"/>',
+refresh:'<path d="M20 11.5a8 8 0 0 0-13.7-5L4 8.8"/><path d="M3.5 4.5v4.5h4.5"/><path d="M4 12.5a8 8 0 0 0 13.7 5l2.3-2.3"/><path d="M20.5 19.5V15h-4.5"/>',
+search:'<circle cx="10.5" cy="10.5" r="6.8"/><path d="M20.5 20.5l-5.2-5.2"/>',
+settings:'<circle cx="12" cy="12" r="3"/><path d="M10.3 3.4a1.4 1.4 0 0 1 3.4 0l.2 1.3a7 7 0 0 1 1.6.9l1.2-.5a1.4 1.4 0 0 1 1.7 2.9l-1 .9a7 7 0 0 1 0 1.9l1 .9a1.4 1.4 0 0 1-1.7 2.9l-1.2-.5a7 7 0 0 1-1.6.9l-.2 1.3a1.4 1.4 0 0 1-3.4 0l-.2-1.3a7 7 0 0 1-1.6-.9l-1.2.5a1.4 1.4 0 0 1-1.7-2.9l1-.9a7 7 0 0 1 0-1.9l-1-.9a1.4 1.4 0 0 1 1.7-2.9l1.2.5a7 7 0 0 1 1.6-.9z"/>',
+'shield-lock':'<path d="M12 3l8 3v5.5c0 4.6-3.3 8.2-8 9.5c-4.7-1.3-8-4.9-8-9.5V6z"/><rect x="9.5" y="11" width="5" height="4.5" rx="1.2"/><path d="M10.8 11V9.8a1.2 1.2 0 0 1 2.4 0V11"/>',
+star:'<path d="M12 3.5l2.6 5.4l5.9.8l-4.3 4.1l1 5.9L12 17l-5.2 2.7l1-5.9L3.5 9.7l5.9-.8z"/>',
+target:'<circle cx="12" cy="12" r="8.5"/><circle cx="12" cy="12" r="4.8"/><circle cx="12" cy="12" r="1.4" fill="currentColor" stroke="none"/>',
+trash:'<path d="M4 7h16"/><path d="M9.5 7V5.2A1.2 1.2 0 0 1 10.7 4h2.6a1.2 1.2 0 0 1 1.2 1.2V7"/><path d="M6.5 7l.9 12.4a1.6 1.6 0 0 0 1.6 1.6h6a1.6 1.6 0 0 0 1.6-1.6L17.5 7"/>',
+'trending-up':'<path d="M3.5 17l5.5-5.5l3.5 3.5l6-6"/><path d="M14 9h4.5v4.5"/>',
+upload:'<path d="M4 16.5v2.5a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-2.5"/><path d="M7.5 7.5L12 3l4.5 4.5"/><path d="M12 3v12.5"/>',
+user:'<circle cx="12" cy="8" r="4"/><path d="M5.5 21v-1.2A4.8 4.8 0 0 1 10.3 15h3.4a4.8 4.8 0 0 1 4.8 4.8V21"/>',
+'user-check':'<circle cx="9.5" cy="8" r="4"/><path d="M3.5 21v-1.2A4.8 4.8 0 0 1 8.3 15H12"/><path d="M15.5 17.5l2 2l4-4"/>',
+'user-cog':'<circle cx="9.5" cy="8" r="4"/><path d="M3.5 21v-1.2A4.8 4.8 0 0 1 8.3 15H12"/><circle cx="18" cy="18" r="2.5"/><path d="M18 14.2V15"/><path d="M18 21v.8"/><path d="M21.4 16l-.7.4"/><path d="M15.3 19.6l-.7.4"/>',
+'user-star':'<circle cx="9.5" cy="8" r="4"/><path d="M3.5 21v-1.2A4.8 4.8 0 0 1 8.3 15H11"/><path d="M17.5 14l1.2 2.4l2.6.4l-1.9 1.8l.4 2.6l-2.3-1.2l-2.3 1.2l.4-2.6l-1.9-1.8l2.6-.4z"/>',
+users:'<circle cx="9" cy="8" r="3.8"/><path d="M3 21v-1.2A4.8 4.8 0 0 1 7.8 15h2.4a4.8 4.8 0 0 1 4.8 4.8V21"/><path d="M16.5 4.6a3.8 3.8 0 0 1 0 6.8"/><path d="M21 21v-1.2a4.8 4.8 0 0 0-3.2-3.8"/>',
+video:'<rect x="3" y="6" width="12.5" height="12" rx="2.5"/><path d="M15.5 10.5l4.4-2.7a.5.5 0 0 1 .76.43v7.54a.5.5 0 0 1-.76.43l-4.4-2.7z"/>',
+x:'<path d="M6 6l12 12"/><path d="M18 6L6 18"/>'
+};
+function svgIcon(n){return '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.75" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false">'+(ICONS[n]||ICONS._)+'</svg>'}
+function hydrateIcons(){document.querySelectorAll('i.ti:empty').forEach(el=>{
+  const c=[...el.classList].find(x=>x.startsWith('ti-'));
+  el.innerHTML=svgIcon(c?c.slice(3):'_');
+});}
+
+</script>
+<script>
+const NUM=n=>n.toLocaleString('id-ID');
+const JAM=n=>String(n).replace('.',',')+' jam';
+
+const CBAKTIF=['Jakarta Pusat','Bandung','Surabaya'];
+
+/* ---- SATU SUMBER DATA: realisasi jam video per task per cabang ----
+   1 baris task = 1 jam video, sehingga seluruh angka berupa bilangan bulat.
+   Seluruh angka di dashboard diturunkan dari sini, tidak ada angka yang ditulis dua kali. */
+const TARGET={'SweeptheFloor-LivingRoom':40,'ReplaceFabric-Pillowcase':30,'FoldAndReapplyFabric-Blanket':25,
+ 'UnloadingItems-Suitcase':35,'LoadingItems-Suitcase':50,'SettingandClearingTableDecorations':20};
+const REAL={
+ 'SweeptheFloor-LivingRoom'          :{'Jakarta Pusat':34,'Bandung':26,'Surabaya':19},
+ 'ReplaceFabric-Pillowcase'          :{'Jakarta Pusat':28,'Bandung':22,'Surabaya':17},
+ 'FoldAndReapplyFabric-Blanket'      :{'Jakarta Pusat':18,'Bandung':12,'Surabaya':9},
+ 'UnloadingItems-Suitcase'           :{'Jakarta Pusat':30,'Bandung':24,'Surabaya':18},
+ 'LoadingItems-Suitcase'             :{'Jakarta Pusat':36,'Bandung':25,'Surabaya':21},
+ 'SettingandClearingTableDecorations':{'Jakarta Pusat':9,'Bandung':9,'Surabaya':7}
+};
+/* Total per cabang: Jakarta Pusat 155 · Bandung 118 · Surabaya 91 · akumulasi 364 jam */
+
+const CABANG=[
+ {id:'CB-01',nama:'Jakarta Pusat',kode:'JKTP',alamat:'Jl. Kebon Sirih No. 12, Jakarta Pusat',pj:'Rahmat Hidayat',status:'aktif'},
+ {id:'CB-02',nama:'Bandung',kode:'BDG',alamat:'Jl. Sukajadi No. 88, Bandung',pj:'Lina Marlina',status:'aktif'},
+ {id:'CB-03',nama:'Surabaya',kode:'SBY',alamat:'Jl. Raya Darmo No. 45, Surabaya',pj:'Andi Saputra',status:'aktif'},
+ {id:'CB-04',nama:'Semarang',kode:'SMG',alamat:'Jl. Pandanaran No. 7, Semarang',pj:'—',status:'nonaktif'}
+];
+const SHIFT=[
+ {id:'SH-1',nama:'Pagi',mulai:'07:00',selesai:'16:00',efektif:8,status:'aktif'},
+ {id:'SH-2',nama:'Siang',mulai:'15:00',selesai:'23:00',efektif:7,status:'aktif'},
+ {id:'SH-3',nama:'Malam',mulai:'23:00',selesai:'07:00',efektif:7,status:'aktif'}
+];
+const shiftOf=n=>SHIFT.find(x=>x.nama===n);
+/* device diidentifikasi dengan kode angka, sesuai pencatatan di lapangan */
+const DEVICE=[
+ {id:'DV-01',kode:'1033',tipe:'Sony ZV-E10',cabang:'Jakarta Pusat',status:'aktif',pakai:36,jam:52,pb:58,bat:31},
+ {id:'DV-02',kode:'822',tipe:'Sony ZV-E10',cabang:'Jakarta Pusat',status:'aktif',pakai:31,jam:45,pb:26,bat:62},
+ {id:'DV-03',kode:'1041',tipe:'Sony ZV-1',cabang:'Jakarta Pusat',status:'aktif',pakai:24,jam:33,pb:44,bat:39},
+ {id:'DV-04',kode:'877',tipe:'Canon M50 II',cabang:'Jakarta Pusat',status:'maintenance',pakai:18,jam:25,pb:35,bat:52},
+ {id:'DV-05',kode:'801',tipe:'Canon M50 II',cabang:'Bandung',status:'aktif',pakai:33,jam:44,pb:74,bat:18},
+ {id:'DV-06',kode:'1089',tipe:'Canon M50 II',cabang:'Bandung',status:'aktif',pakai:22,jam:30,pb:41,bat:47},
+ {id:'DV-07',kode:'915',tipe:'Sony ZV-E10',cabang:'Bandung',status:'aktif',pakai:19,jam:26,pb:29,bat:58},
+ {id:'DV-08',kode:'1102',tipe:'Sony ZV-1',cabang:'Bandung',status:'rusak',pakai:13,jam:18,pb:66,bat:22},
+ {id:'DV-09',kode:'922',tipe:'Sony ZV-1',cabang:'Surabaya',status:'aktif',pakai:23,jam:32,pb:22,bat:66},
+ {id:'DV-10',kode:'939',tipe:'Sony ZV-1',cabang:'Surabaya',status:'aktif',pakai:17,jam:26,pb:63,bat:24},
+ {id:'DV-11',kode:'810',tipe:'Canon M50 II',cabang:'Surabaya',status:'aktif',pakai:14,jam:20,pb:31,bat:54},
+ {id:'DV-12',kode:'1177',tipe:'Sony ZV-E10',cabang:'Surabaya',status:'maintenance',pakai:9,jam:13,pb:48,bat:37}
+];
+/* jam per DCO dijumlahkan = total jam cabangnya; lap = jumlah laporan harian */
+const DCO=[
+ {id:'DC-01',nama:'Rizky Ramadhan',cabang:'Jakarta Pusat',telp:'0812-3456-7890',status:'aktif',jam:58,lap:8},
+ {id:'DC-02',nama:'Siti Rahayu',cabang:'Jakarta Pusat',telp:'0813-2233-4455',status:'aktif',jam:52,lap:7},
+ {id:'DC-03',nama:'Putri Handayani',cabang:'Jakarta Pusat',telp:'0811-7788-9900',status:'aktif',jam:45,lap:6},
+ {id:'DC-04',nama:'Bayu Prasetya',cabang:'Bandung',telp:'0857-1122-3344',status:'aktif',jam:45,lap:6},
+ {id:'DC-05',nama:'Nur Aisyah',cabang:'Bandung',telp:'0852-9988-7766',status:'aktif',jam:38,lap:5},
+ {id:'DC-06',nama:'Dimas Anggara',cabang:'Bandung',telp:'0858-2211-3355',status:'aktif',jam:35,lap:5},
+ {id:'DC-07',nama:'Andi Kurniawan',cabang:'Surabaya',telp:'0819-4455-6677',status:'aktif',jam:36,lap:5},
+ {id:'DC-08',nama:'Maya Lestari',cabang:'Surabaya',telp:'0895-3322-1100',status:'aktif',jam:30,lap:4},
+ {id:'DC-09',nama:'Bagas Saputra',cabang:'Surabaya',telp:'0812-6644-2200',status:'nonaktif',jam:25,lap:4}
+];
+const TASK=Object.keys(TARGET).map((n,i)=>({id:'TK-0'+(i+1),nama:n,target:TARGET[n],status:'aktif',
+  desc:{'SweeptheFloor-LivingRoom':'Rekam proses menyapu lantai ruang tamu dari awal sampai bersih.',
+   'ReplaceFabric-Pillowcase':'Rekam proses mengganti sarung bantal dengan yang bersih.',
+   'FoldAndReapplyFabric-Blanket':'Rekam proses melipat dan memasang kembali selimut.',
+   'UnloadingItems-Suitcase':'Rekam proses mengeluarkan seluruh barang dari koper.',
+   'LoadingItems-Suitcase':'Rekam proses menata dan memasukkan barang ke dalam koper.',
+   'SettingandClearingTableDecorations':'Rekam proses menata lalu membereskan dekorasi meja.'}[n]}))
+ .concat([{id:'TK-07',nama:'WateringPlants-Balcony',target:15,status:'draft',desc:'Rekam proses menyiram tanaman di balkon.'}]);
+
+/* satu laporan = satu DCO pada satu tanggal dan satu shift, berisi banyak baris task */
+const LAP=[
+ {id:'LP-2401',tgl:'29 Sep 2026',jam2:'14:10',dco:'Rizky Ramadhan',cabang:'Jakarta Pusat',shift:'Pagi',spv:'202 - Dewi Anggraini',rows:[
+   {task:'SweeptheFloor-LivingRoom',device:'1033',pb:false,bat:30},
+   {task:'ReplaceFabric-Pillowcase',device:'822',pb:true,bat:30},
+   {task:'FoldAndReapplyFabric-Blanket',device:'1033',pb:false,bat:28},
+   {task:'FoldAndReapplyFabric-Blanket',device:'822',pb:true,bat:26},
+   {task:'UnloadingItems-Suitcase',device:'1033',pb:true,bat:24},
+   {task:'LoadingItems-Suitcase',device:'1033',pb:false,bat:22},
+   {task:'SettingandClearingTableDecorations',device:'822',pb:true,bat:19},
+   {task:'LoadingItems-Suitcase',device:'1033',pb:true,bat:18}]},
+ {id:'LP-2400',tgl:'29 Sep 2026',jam2:'11:35',dco:'Siti Rahayu',cabang:'Jakarta Pusat',shift:'Pagi',spv:'202 - Dewi Anggraini',rows:[
+   {task:'LoadingItems-Suitcase',device:'822',pb:false,bat:61},
+   {task:'SweeptheFloor-LivingRoom',device:'822',pb:false,bat:54},
+   {task:'ReplaceFabric-Pillowcase',device:'1033',pb:true,bat:48},
+   {task:'UnloadingItems-Suitcase',device:'1033',pb:true,bat:41}]},
+ {id:'LP-2399',tgl:'29 Sep 2026',jam2:'10:02',dco:'Bayu Prasetya',cabang:'Bandung',shift:'Pagi',spv:'305 - Intan Permata',rows:[
+   {task:'UnloadingItems-Suitcase',device:'801',pb:true,bat:19},
+   {task:'UnloadingItems-Suitcase',device:'801',pb:true,bat:15},
+   {task:'LoadingItems-Suitcase',device:'1089',pb:true,bat:12}]},
+ {id:'LP-2398',tgl:'29 Sep 2026',jam2:'09:44',dco:'Andi Kurniawan',cabang:'Surabaya',shift:'Pagi',spv:'118 - Yoga Pratama',rows:[
+   {task:'SweeptheFloor-LivingRoom',device:'922',pb:false,bat:73},
+   {task:'LoadingItems-Suitcase',device:'922',pb:false,bat:66},
+   {task:'FoldAndReapplyFabric-Blanket',device:'939',pb:false,bat:59}]},
+ {id:'LP-2397',tgl:'28 Sep 2026',jam2:'16:48',dco:'Nur Aisyah',cabang:'Bandung',shift:'Siang',spv:'305 - Intan Permata',rows:[
+   {task:'ReplaceFabric-Pillowcase',device:'801',pb:false,bat:44},
+   {task:'SettingandClearingTableDecorations',device:'801',pb:false,bat:38}]},
+ {id:'LP-2396',tgl:'28 Sep 2026',jam2:'15:20',dco:'Maya Lestari',cabang:'Surabaya',shift:'Siang',spv:'118 - Yoga Pratama',rows:[
+   {task:'LoadingItems-Suitcase',device:'922',pb:false,bat:58},
+   {task:'SweeptheFloor-LivingRoom',device:'922',pb:false,bat:51},
+   {task:'UnloadingItems-Suitcase',device:'922',pb:true,bat:44},
+   {task:'ReplaceFabric-Pillowcase',device:'939',pb:true,bat:37},
+   {task:'FoldAndReapplyFabric-Blanket',device:'939',pb:true,bat:31},
+   {task:'SettingandClearingTableDecorations',device:'939',pb:true,bat:26},
+   {task:'LoadingItems-Suitcase',device:'922',pb:true,bat:21},
+   {task:'SweeptheFloor-LivingRoom',device:'922',pb:true,bat:16}]},
+ {id:'LP-2395',tgl:'28 Sep 2026',jam2:'09:15',dco:'Putri Handayani',cabang:'Jakarta Pusat',shift:'Pagi',spv:'411 - Fajar Nugroho',rows:[
+   {task:'FoldAndReapplyFabric-Blanket',device:'1033',pb:true,bat:12}]},
+ {id:'LP-2394',tgl:'27 Sep 2026',jam2:'20:40',dco:'Dimas Anggara',cabang:'Bandung',shift:'Malam',spv:'305 - Intan Permata',rows:[
+   {task:'SweeptheFloor-LivingRoom',device:'1089',pb:false,bat:55},
+   {task:'LoadingItems-Suitcase',device:'1089',pb:false,bat:48}]},
+ {id:'LP-2393',tgl:'27 Sep 2026',jam2:'13:05',dco:'Rizky Ramadhan',cabang:'Jakarta Pusat',shift:'Pagi',spv:'202 - Dewi Anggraini',rows:[
+   {task:'LoadingItems-Suitcase',device:'822',pb:true,bat:24},
+   {task:'SettingandClearingTableDecorations',device:'822',pb:true,bat:20},
+   {task:'UnloadingItems-Suitcase',device:'1033',pb:false,bat:17}]},
+ {id:'LP-2392',tgl:'27 Sep 2026',jam2:'11:30',dco:'Bagas Saputra',cabang:'Surabaya',shift:'Pagi',spv:'118 - Yoga Pratama',rows:[
+   {task:'UnloadingItems-Suitcase',device:'939',pb:true,bat:21},
+   {task:'SweeptheFloor-LivingRoom',device:'939',pb:true,bat:16}]}
+];
+const jamLap=l=>l.rows.length;
+const SPV=[
+ {id:'SP-01',kode:'202',nama:'Dewi Anggraini',email:'dewi.a@dcotrack.id',telp:'0812-1111-2222',cabang:'Jakarta Pusat',admin:true,status:'aktif',lap:12},
+ {id:'SP-02',kode:'411',nama:'Fajar Nugroho',email:'fajar.n@dcotrack.id',telp:'0813-3333-4444',cabang:'Jakarta Pusat',admin:false,status:'aktif',lap:9},
+ {id:'SP-03',kode:'305',nama:'Intan Permata',email:'intan.p@dcotrack.id',telp:'0857-5555-6666',cabang:'Bandung',admin:true,status:'aktif',lap:16},
+ {id:'SP-04',kode:'118',nama:'Yoga Pratama',email:'yoga.p@dcotrack.id',telp:'0852-7777-8888',cabang:'Surabaya',admin:false,status:'aktif',lap:9},
+ {id:'SP-05',kode:'527',nama:'Rani Oktaviani',email:'rani.o@dcotrack.id',telp:'0819-9999-0000',cabang:'Surabaya',admin:false,status:'nonaktif',lap:4}
+];
+/* tren jam video per hari, per cabang — dijumlahkan sesuai cakupan yang aktif */
+const TRENCB={
+ 'Jakarta Pusat':[4,5,4,6,5,6,6],
+ 'Bandung'      :[3,4,3,4,4,5,4],
+ 'Surabaya'     :[2,3,2,3,3,4,3]
+};
+const TRENHARI=['23 Sep','24 Sep','25 Sep','26 Sep','27 Sep','28 Sep','29 Sep'];
+/* jumlah laporan per shift, per cabang */
+const SHIFTCB={
+ 'Jakarta Pusat':{Pagi:11,Siang:7,Malam:3},
+ 'Bandung'      :{Pagi:8,Siang:5,Malam:3},
+ 'Surabaya'     :{Pagi:7,Siang:4,Malam:2}
+};
+const SHIFTWARNA={Pagi:'var(--nila-500)',Siang:'var(--nila-300)',Malam:'var(--nila-100)'};
+
+const ROLES={
+ super:{n:'Rina Kartika',r:'Super Admin',cb:null},
+ admin:{n:'Intan Permata',r:'Admin Cabang',cb:'Bandung'},
+ dual:{n:'Dewi Anggraini',r:'Admin Cabang + SPV',cb:'Jakarta Pusat'}
+};
+const NAV=[
+ ['Utama',[['dash','Dashboard','layout-dashboard',['super','admin','dual']],
+           ['laporan','Laporan Pekerjaan','clipboard-list',['super','admin','dual']]]],
+ ['Master Data',[['mCabang','Cabang','building',['super']],
+                 ['mShift','Shift','clock',['super','admin','dual']],
+                 ['mDevice','Device','camera',['super','admin','dual']],
+                 ['mDCO','DCO','users',['super','admin','dual']],
+                 ['mTask','Task & Target','target',['super','admin','dual']]]],
+ ['Pengguna',[['uSpv','Supervisor','user-star',['super','admin','dual']],
+              ['uAdmin','Admin Cabang','shield-lock',['super']]]],
+ ['Akun',[['profil','Profil','settings',['super','admin','dual']]]]
+];
+
+const S={role:'super',sc:'dash',sel:null,modal:null,fCb:'Semua',fTask:'Semua',fPeriode:'30 hari terakhir',q:'',view:'laporan'};
+
+let TT=null;
+function toast(msg,kind){const el=document.getElementById('toast');if(!el)return;
+  const ic={ok:'circle-check',bad:'alert-circle',info:'info-circle'}[kind||'info'];
+  el.innerHTML='<i class="ti ti-'+ic+'"></i><span>'+msg+'</span>';
+  el.classList.add('on');clearTimeout(TT);TT=setTimeout(()=>el.classList.remove('on'),3200)}
+window.alert=m=>toast(m,'info');
+
+function me(){return ROLES[S.role]}
+function can(id){const it=NAV.flatMap(g=>g[1]).find(x=>x[0]===id);return !!(it&&it[3].includes(S.role))}
+function setRole(r){S.role=r;if(!can(S.sc))S.sc='dash';S.sel=null;S.modal=null;
+  S.fCb=ROLES[r].cb||'Semua';paint()}
+function go(id){if(!can(id))return;S.sc=id;S.sel=null;S.modal=null;paint()}
+function closeModal(){S.modal=null;paint()}
+
+/* ---------- CAKUPAN DATA ----------
+   Super Admin: seluruh cabang aktif, atau satu cabang bila difilter.
+   Admin Cabang: dikunci ke cabangnya sendiri. */
+function cakupan(){const c=me().cb; if(c)return [c];
+  return S.fCb==='Semua'?CBAKTIF.slice():[S.fCb]}
+function akumulasi(){return cakupan().length>1}
+function inScope(row){return cakupan().includes(row.cabang)}
+const lapScoped=()=>LAP.filter(inScope);
+const dcoScoped=()=>DCO.filter(inScope);
+const devScoped=()=>DEVICE.filter(inScope);
+const spvScoped=()=>SPV.filter(inScope);
+
+/* seluruh angka dashboard diturunkan dari REAL/TARGET sesuai cakupan */
+const realTask=n=>+(cakupan().reduce((a,c)=>a+((REAL[n]||{})[c]||0),0)).toFixed(1);
+const targetTask=n=>(TARGET[n]||0)*cakupan().length;
+const realCabang=c=>+(Object.keys(TARGET).reduce((a,n)=>a+((REAL[n]||{})[c]||0),0)).toFixed(1);
+const targetCabang=()=>Object.values(TARGET).reduce((a,b)=>a+b,0);
+const totalReal=()=>+(cakupan().reduce((a,c)=>a+realCabang(c),0)).toFixed(1);
+const totalTarget=()=>targetCabang()*cakupan().length;
+const totalLaporan=()=>dcoScoped().reduce((a,d)=>a+d.lap,0);
+function trenScoped(){return TRENHARI.map((d,i)=>({d,j:+(cakupan().reduce((a,c)=>a+(TRENCB[c]||[])[i],0)).toFixed(1)}))}
+function shiftScoped(){
+  const t={Pagi:0,Siang:0,Malam:0};
+  cakupan().forEach(c=>Object.keys(t).forEach(k=>t[k]+=(SHIFTCB[c]||{})[k]||0));
+  const tot=t.Pagi+t.Siang+t.Malam||1;
+  return Object.keys(t).map(k=>({n:k,jml:t[k],v:Math.round(t[k]/tot*100),c:SHIFTWARNA[k]}))}
+
+function paint(){
+  ['super','admin','dual'].forEach(r=>{const b=document.getElementById('r-'+r);if(b)b.className=S.role===r?'on':''});
+  document.getElementById('root').innerHTML=S.sc==='login'?loginView():shell();
+  hydrateIcons();window.scrollTo(0,0);
+}
+
+function loginView(){return `
+<div style="min-height:calc(100vh - 96px);display:flex;align-items:center;justify-content:center;padding:40px 20px;background:#fff;border-radius:24px">
+ <div style="width:100%;max-width:420px">
+  <div style="display:flex;align-items:center;gap:12px;margin-bottom:28px">
+    <div style="width:44px;height:44px;border-radius:13px;background:var(--nila-900);color:#fff;display:flex;align-items:center;justify-content:center;font-size:22px"><i class="ti ti-chart-bar"></i></div>
+    <div><div style="font-size:20px;font-weight:700;letter-spacing:-.02em;line-height:1.2">DCOTRACK</div>
+    <div class="sm">Konsol Admin</div></div>
+  </div>
+  <h1 style="font-size:32px;font-weight:700;letter-spacing:-.03em;line-height:1.2">Masuk ke konsol</h1>
+  <p style="font-size:16px;font-weight:300;color:var(--ink2);margin-top:8px">Akun dibuat oleh Super Admin. Tidak tersedia pendaftaran mandiri.</p>
+  <div style="margin-top:28px">
+    <div class="f"><label>Email</label><input id="ae" type="email" value="intan.p@dcotrack.id" placeholder="nama@dcotrack.id"></div>
+    <div class="f"><label>Password</label><input id="ap" type="password" value="rahasia123" placeholder="Masukkan password"></div>
+    <div id="aerr"></div>
+    <div style="display:flex;justify-content:flex-end;margin-bottom:12px">
+      <button class="btn" style="background:transparent;border:0;color:var(--nila-700);min-height:36px;padding:0;font-size:14px" onclick="toast('Link reset dikirim ke email terdaftar, berlaku 30 menit.','ok')">Lupa Password?</button></div>
+    <button class="btn btn-p" style="width:100%" onclick="tryLogin()">Masuk<i class="ti ti-arrow-right"></i></button>
+  </div>
+  <div class="bn b-info mt24">Coba <b>salah@dcotrack.id</b> untuk pesan email belum terdaftar, atau ubah passwordnya untuk pesan kredensial salah.</div>
+ </div>
+</div>`}
+
+function tryLogin(){
+  const e=document.getElementById('ae').value.trim(),p=document.getElementById('ap').value;
+  const box=document.getElementById('aerr');
+  const akun={'rina.k@dcotrack.id':'super','intan.p@dcotrack.id':'admin','dewi.a@dcotrack.id':'dual'};
+  if(!e||!p){box.innerHTML='<div class="bn b-bad" style="margin-bottom:16px">Email dan password wajib diisi.</div>';return}
+  if(!akun[e]){box.innerHTML='<div class="bn b-bad" style="margin-bottom:16px">Email belum terdaftar.</div>';return}
+  if(p!=='rahasia123'){box.innerHTML='<div class="bn b-bad" style="margin-bottom:16px">Email atau password salah.</div>';return}
+  setRole(akun[e]);S.sc='dash';paint();
+}
+
+function shell(){
+  const M=me();
+  let nav='';
+  NAV.forEach(([g,items])=>{
+    nav+=`<div class="navgrp">${g}</div>`;
+    items.forEach(([id,label,ic,roles])=>{
+      const ok=roles.includes(S.role);
+      nav+=`<a class="${S.sc===id?'on':''} ${ok?'':'off'}" ${ok?`onclick="go('${id}')"`:''} title="${ok?label:'Hanya Super Admin'}">
+        <i class="ti ti-${ic}"></i><span class="lbl">${label}</span></a>`;
+    });
+  });
+  const ini=M.n.split(' ').map(x=>x[0]).slice(0,2).join('');
+  return `<div class="app">
+   <aside class="side">
+     <div class="brand"><div class="lg"><i class="ti ti-chart-bar"></i></div>
+       <div><div class="nm">DCOTRACK</div><div class="sb">${M.cb||'Semua cabang'}</div></div></div>
+     <div class="sfind" onclick="toast('Pencarian global belum tersambung di prototipe ini.','info')">
+       <i class="ti ti-search"></i><span class="lbl">Cari</span><span class="k">⌘K</span></div>
+     ${nav}
+     <div class="foot">
+       ${S.role==='dual'?`<button class="swbtn" onclick="toast('Berpindah ke Web App untuk input laporan DCO.','info')">
+         <i class="ti ti-arrows-exchange"></i><span>Pindah ke Input Laporan</span></button>`:''}
+       <div class="ucard"><div class="av">${ini}</div>
+         <div style="min-width:0"><div class="un">${M.n}</div><div class="ur">${M.r}</div></div>
+         <button class="out" onclick="S.sc='login';paint()" title="Keluar"><i class="ti ti-logout"></i></button></div>
+     </div>
+   </aside>
+   <main class="main">${(V[S.sc]||V.dash)()}</main>
+  </div>${S.modal?S.modal():''}`;
+}
+
+function pageTop(t,sub,act){return `<div class="top"><div><h1>${t}</h1>${sub?`<div class="sub">${sub}</div>`:''}</div>${act?`<div class="act">${act}</div>`:''}</div>`}
+function pill(kind,txt){return `<span class="pill s-${kind}">${txt}</span>`}
+function stTask(t){const p=realTask(t.nama)/(targetTask(t.nama)||1)*100;return p>=100?'ok':p>=70?'run':p>=40?'wait':'bad'}
+
+const V={};
+
+/* ---------- DASHBOARD ANALITIK ---------- */
+V.dash=()=>{
+  const M=me(), CK=cakupan(), AKU=akumulasi();
+  const tasks=TASK.filter(t=>t.status==='aktif');
+  const tReal=totalReal(), tTarget=totalTarget();
+  const pct=Math.round(tReal/tTarget*100);
+  const dev=devScoped(), dcos=dcoScoped();
+  const dcoAktif=dcos.filter(d=>d.status==='aktif');
+  const maxJam=Math.max(...dev.map(d=>d.jam),1);
+  const maxDco=Math.max(...dcos.map(d=>d.jam),1);
+  const nLap=totalLaporan();
+  const SD=shiftScoped();
+
+  const cakupanLabel = M.cb ? `Cabang ${M.cb}`
+    : AKU ? `Akumulasi ${CK.length} cabang aktif` : `Cabang ${CK[0]}`;
+
+  const filt=`<div class="card" style="margin-bottom:18px"><div class="bd" style="padding:16px 20px;display:flex;gap:12px;flex-wrap:wrap;align-items:center">
+    <i class="ti ti-filter" style="font-size:20px;color:var(--ink3)"></i>
+    <select onchange="S.fPeriode=this.value;paint()">${['7 hari terakhir','30 hari terakhir','Bulan ini','Kuartal ini'].map(x=>`<option ${S.fPeriode===x?'selected':''}>${x}</option>`).join('')}</select>
+    <select ${M.cb?'disabled':''} onchange="S.fCb=this.value;paint()">
+      ${M.cb?`<option>${M.cb}</option>`:['Semua',...CBAKTIF].map(x=>`<option ${S.fCb===x?'selected':''}>${x==='Semua'?'Semua cabang':x}</option>`).join('')}</select>
+    <select onchange="S.fTask=this.value;paint()">${['Semua',...tasks.map(t=>t.nama)].map(x=>`<option ${S.fTask===x?'selected':''}>${x==='Semua'?'Semua task':x}</option>`).join('')}</select>
+    <select><option>Semua DCO</option>${dcoAktif.map(d=>`<option>${d.nama}</option>`).join('')}</select>
+    ${M.cb?`<span class="sm" style="margin-left:auto">Filter cabang terkunci di <b style="font-weight:600;color:var(--kabut-700)">${M.cb}</b></span>`
+          :`<button class="btn btn-g btn-sm" style="margin-left:auto" onclick="S.fCb='Semua';S.fTask='Semua';paint()">Reset filter</button>`}
+  </div></div>`;
+
+  const cakupanBar=`<div class="bn ${AKU?'b-info':'b-wait'}" style="margin-bottom:18px;display:flex;gap:12px;align-items:flex-start">
+    <i class="ti ti-${AKU?'database':'building'}" style="font-size:20px;flex:none;margin-top:2px"></i>
+    <div>${AKU
+      ? `<b>Seluruh angka di halaman ini adalah akumulasi ${CK.length} cabang aktif:</b> ${CK.join(', ')}.
+         Target keseluruhan ${tTarget} jam berasal dari ${targetCabang()} jam per cabang dikali ${CK.length} cabang.`
+      : `<b>Data dipersempit ke cabang ${CK[0]} saja.</b> ${M.cb?'Admin Cabang hanya melihat data cabangnya sendiri.':'Pilih “Semua cabang” pada filter untuk melihat akumulasi seluruh cabang.'}`}
+    </div></div>`;
+
+  const q=(lb,n,tone,ic,ft)=>`<div class="q"><div class="qh"><div class="lb">${lb}</div>
+     <div class="ic" style="background:var(--${tone}-50);color:var(--${tone}-600)"><i class="ti ti-${ic}"></i></div></div>
+     <div class="n num">${n}</div><div class="ft">${ft}</div></div>`;
+
+  return pageTop('Dashboard Analitik',`${cakupanLabel} · ${S.fPeriode}`,
+    `<button class="btn btn-g" onclick="toast('Menyegarkan data dashboard.','info')"><i class="ti ti-refresh"></i> Segarkan</button>
+     <button class="btn btn-p" onclick="toast('Menyiapkan rekap analitik dalam format Excel.','info')"><i class="ti ti-download"></i> Export</button>`)+`<div class="body">
+   ${filt}${cakupanBar}
+   <div class="grid4">
+     ${q('Total jam video',JAM(tReal),'nila','video',`Dari target <b>${tTarget} jam</b>${AKU?` (${CK.length} cabang)`:''}`)}
+     ${q('Pencapaian target',pct+'%',pct>=80?'panen':pct>=60?'senja':'delima','target',
+        `<span class="delta ${pct>=80?'d-up':'d-down'}"><i class="ti ti-${pct>=80?'arrow-up-right':'arrow-down-right'}" style="font-size:15px"></i>${pct>=80?'On track':'Di bawah target'}</span>`)}
+     ${q('Laporan masuk',NUM(nLap),'nila','clipboard-list',`Rata-rata <b>${(tReal/nLap).toFixed(1)} jam</b> per laporan`)}
+     ${q('DCO tercatat',dcos.length,'panen','users',`${dcoAktif.length} aktif · rata-rata <b>${(tReal/dcos.length).toFixed(1)} jam</b> per DCO`)}
+   </div>
+
+   ${AKU?`<div class="card mt24"><div class="hd"><div><h3>Kontribusi tiap cabang</h3>
+     <div class="sm">Dari mana angka ${JAM(tReal)} di atas berasal</div></div>
+     <div class="r">${pill('run',CK.length+' cabang')}</div></div>
+     <div class="bd" style="padding:8px 22px 18px">
+     ${CK.map(c=>{const r=realCabang(c),t=targetCabang(),p=r/t*100;
+       const k=p>=85?'ok':p>=70?'run':p>=50?'wait':'bad';
+       return `<div class="prow"><div class="pn">${c}</div>
+        <div class="pb"><i class="bar-${k}" style="width:${Math.min(100,p)}%"></i><span class="tg" style="left:100%"></span></div>
+        <div class="pv" style="width:190px">${JAM(r)} <small>target ${t} jam · ${Math.round(p)}% · ${Math.round(r/tReal*100)}% dari total</small></div></div>`}).join('')}
+     </div>
+     <div class="bd" style="padding:0 22px 20px"><div class="kv" style="border-top:1px solid var(--line);padding-top:14px">
+       <span class="k" style="font-weight:600;color:var(--kabut-800)">Akumulasi seluruh cabang</span>
+       <span class="v num" style="font-size:18px;font-weight:700">${JAM(tReal)} dari ${tTarget} jam</span></div></div>
+   </div>`:''}
+
+   <div class="card mt24"><div class="hd"><div><h3>Progress jam video per task</h3>
+     <div class="sm">${AKU?`Realisasi ${CK.length} cabang dijumlahkan, target ikut dikali ${CK.length}`:'Realisasi dibanding target cabang ini'}. Garis abu menandai posisi target.</div></div>
+     <div class="r">${pill(pct>=80?'ok':'wait',pct+'% keseluruhan')}</div></div>
+     <div class="bd" style="padding:8px 22px 18px">
+     ${tasks.map(t=>{const r=realTask(t.nama),tg=targetTask(t.nama);const p=Math.min(100,r/tg*100);
+       const pr=r/tg*100;const k=pr>=100?'ok':pr>=70?'run':pr>=40?'wait':'bad';
+       return `<div class="prow"><div class="pn">${t.nama}</div>
+        <div class="pb"><i class="bar-${k}" style="width:${p}%"></i><span class="tg" style="left:100%"></span></div>
+        <div class="pv" style="width:180px">${JAM(r)} <small>target ${tg} jam · ${Math.round(pr)}%${AKU?` · ${CK.map(c=>(REAL[t.nama][c]||0)).join(' + ')}`:''}</small></div></div>`}).join('')}
+     </div>
+     <div class="bd" style="padding:0 22px 18px"><div class="legend">
+       <span><i class="bar-ok"></i>Tercapai</span><span><i class="bar-run"></i>70–99%</span>
+       <span><i class="bar-wait"></i>40–69%</span><span><i class="bar-bad"></i>Di bawah 40%</span></div></div>
+   </div>
+
+   <div class="grid2 mt24">
+     <div class="card"><div class="hd"><div><h3>Device paling sering dipakai</h3>
+       <div class="sm">Total jam pemakaian${AKU?' dari seluruh cabang':''}</div></div></div>
+       <div class="bd" style="padding:8px 22px 18px">
+       ${dev.slice().sort((a,b)=>b.jam-a.jam).map(d=>`<div class="prow"><div class="pn">${d.kode}${AKU?`<div class="sm">${d.cabang}</div>`:''}</div>
+         <div class="pb"><i class="bar-run" style="width:${d.jam/maxJam*100}%"></i></div>
+         <div class="pv" style="width:104px">${JAM(d.jam)} <small>${d.pakai}× dipakai</small></div></div>`).join('')}
+       </div></div>
+
+     <div class="card"><div class="hd"><div><h3>Distribusi laporan per shift</h3>
+       <div class="sm">${nLap} laporan${AKU?` dari ${CK.length} cabang`:''}</div></div></div>
+       <div class="bd" style="display:flex;align-items:center;gap:28px;flex-wrap:wrap;justify-content:center">
+       ${donut(SD)}
+       <div style="min-width:190px">${SD.map(s=>`<div class="kv"><span class="k" style="display:inline-flex;align-items:center;gap:9px">
+         <i style="width:12px;height:12px;border-radius:4px;background:${s.c};display:inline-block"></i>${s.n}</span>
+         <span class="v num">${s.v}% <small style="font-weight:300;color:var(--ink3)">(${s.jml})</small></span></div>`).join('')}</div>
+       </div></div>
+   </div>
+
+   <div class="grid2 mt24">
+     <div class="card"><div class="hd"><div><h3>Produktivitas DCO</h3>
+       <div class="sm">Total jam video per DCO${AKU?' lintas cabang':''}, urut dari tertinggi</div></div>
+       <div class="r"><select class="btn-sm" style="min-height:38px;font-size:14px"><option>Tertinggi</option><option>Terendah</option></select></div></div>
+       <div class="bd" style="padding:8px 22px 18px">
+       ${dcos.slice().sort((a,b)=>b.jam-a.jam).map(d=>`<div class="prow"><div class="pn">${d.nama}
+         <div class="sm">${AKU?d.cabang:''}${d.status!=='aktif'?(AKU?' · ':'')+'nonaktif':''}</div></div>
+         <div class="pb"><i class="bar-${d.status==='aktif'?'ok':'off'}" style="width:${d.jam/maxDco*100}%;background:${d.status==='aktif'?'':'var(--kabut-300)'}"></i></div>
+         <div class="pv" style="width:104px">${JAM(d.jam)} <small>${d.lap} laporan</small></div></div>`).join('')}
+       </div></div>
+
+     <div class="card"><div class="hd"><div><h3>Rata-rata sisa baterai per device</h3>
+       <div class="sm">Di bawah 20% ditandai sebagai perhatian khusus</div></div></div>
+       <div class="bd" style="padding:8px 22px 18px">
+       ${dev.slice().sort((a,b)=>a.bat-b.bat).map(d=>{const k=d.bat<20?'bad':d.bat<40?'wait':'ok';
+         return `<div class="prow"><div class="pn">${d.kode}${AKU?`<div class="sm">${d.cabang}</div>`:''}</div>
+         <div class="pb"><i class="bar-${k}" style="width:${d.bat}%"></i><span class="tg" style="left:20%"></span></div>
+         <div class="pv" style="width:112px">${d.bat}% <small>${d.bat<20?'perlu dicek':'normal'}</small></div></div>`}).join('')}
+       </div>
+       ${(()=>{const w=dev.filter(d=>d.bat<25&&d.pb>=60).sort((a,b)=>a.bat-b.bat)[0];
+         return w?`<div class="bd" style="padding:0 22px 18px"><div class="bn b-wait">
+         <b>${w.nama}</b> (${w.cabang}) rata-rata tersisa ${w.bat}% dan ${w.pb}% laporannya memakai powerbank. Kandidat kuat untuk penggantian baterai.</div></div>`:''})()}
+     </div>
+   </div>
+
+   <div class="grid2 mt24">
+     <div class="card"><div class="hd"><div><h3>Pemakaian powerbank per device</h3>
+       <div class="sm">Persentase laporan yang menandai pakai powerbank</div></div></div>
+       <div class="bd" style="padding:8px 22px 18px">
+       ${dev.slice().sort((a,b)=>b.pb-a.pb).map(d=>{const k=d.pb>=60?'bad':d.pb>=35?'wait':'ok';
+         return `<div class="prow"><div class="pn">${d.kode}${AKU?`<div class="sm">${d.cabang}</div>`:''}</div>
+         <div class="pb"><i class="bar-${k}" style="width:${d.pb}%"></i></div>
+         <div class="pv" style="width:72px">${d.pb}%</div></div>`}).join('')}
+       </div></div>
+
+     <div class="card"><div class="hd"><div><h3>Tren jam video</h3>
+       <div class="sm">7 hari terakhir${AKU?` · ${CK.length} cabang dijumlahkan`:''}</div></div></div>
+       <div class="bd">${lineChart(trenScoped())}</div></div>
+   </div>
+
+   <div class="grid2 mt24">
+     <div class="card"><div class="hd"><div><h3>Pemenuhan jam kerja per DCO</h3>
+       <div class="sm">Rata-rata jam video per hari kerja, dibanding durasi efektif shift 8 jam</div></div></div>
+       <div class="bd" style="padding:8px 22px 18px">
+       ${dcoAktif.slice().map(d=>({...d,avg:+(d.jam/(d.lap||1)).toFixed(1)}))
+         .sort((a,b)=>b.avg-a.avg).map(d=>{const p=Math.round(d.avg/8*100);
+         const k=p>=95?'ok':p>=75?'run':'bad';
+         return `<div class="prow"><div class="pn">${d.nama}${AKU?`<div class="sm">${d.cabang}</div>`:''}</div>
+         <div class="pb"><i class="bar-${k}" style="width:${Math.min(100,p)}%"></i></div>
+         <div class="pv" style="width:132px">${String(d.avg).replace('.',',')} jam/hari
+           <small style="display:block;font-weight:300;color:var(--ink3)">${p}% · ${d.lap} hari</small></div></div>`}).join('')}
+       </div>
+       <div class="bd" style="padding-top:0"><div class="bn b-wait">DCO dengan pemenuhan di bawah <b>75%</b> ditandai merah. Periksa apakah memang beban kerjanya lebih ringan, atau ada task yang belum dilaporkan Supervisor.</div></div>
+     </div>
+
+     <div class="card"><div class="hd"><div><h3>Komposisi task terkumpul</h3>
+       <div class="sm">Jenis data yang paling banyak dan paling sedikit terkumpul</div></div></div>
+       <div class="bd" style="padding:8px 22px 18px">
+       ${(()=>{const withReal=tasks.map(t=>({t,r:realTask(t.nama)}));
+         const maxR=Math.max(...withReal.map(x=>x.r),1);
+         const ada=withReal.filter(x=>x.r>0).sort((a,b)=>b.r-a.r);
+         return ada.map(({t,r})=>`<div class="prow"><div class="pn" style="font-size:15px">${t.nama}</div>
+           <div class="pb"><i class="bar-run" style="width:${Math.round(r/maxR*100)}%"></i></div>
+           <div class="pv" style="width:78px">${JAM(r)}</div></div>`).join('')})()}
+       </div>
+       ${(()=>{const kosong=TASK.filter(t=>realTask(t.nama)===0);
+         return kosong.length?`<div class="bd" style="padding-top:0"><div class="bn b-bad">
+           <b>${kosong.length} task belum pernah dilaporkan</b> pada cakupan dan periode ini:
+           ${kosong.map(t=>t.nama).join(', ')}.</div></div>`
+         :`<div class="bd" style="padding-top:0"><div class="bn b-ok">Seluruh task aktif sudah pernah dilaporkan pada periode ini.</div></div>`})()}
+     </div>
+   </div>
+  </div>`};
+
+function donut(data){
+  const R=54,C=2*Math.PI*R;let off=0;
+  const segs=data.map(d=>{const len=d.v/100*C;const s=`<circle cx="70" cy="70" r="${R}" fill="none" stroke="${d.c}" stroke-width="22" stroke-dasharray="${len} ${C-len}" stroke-dashoffset="${-off}" transform="rotate(-90 70 70)"/>`;off+=len;return s}).join('');
+  return `<svg width="140" height="140" viewBox="0 0 140 140" role="img" aria-label="Distribusi laporan per shift">${segs}
+    <text x="70" y="66" text-anchor="middle" font-family="Urbanist" font-size="24" font-weight="700" fill="#1A1A17">100%</text>
+    <text x="70" y="86" text-anchor="middle" font-family="Urbanist" font-size="14" font-weight="300" fill="#7D7D74">laporan</text></svg>`}
+
+function lineChart(data){
+  const W=560,H=210,P={l:44,r:14,t:16,b:32};
+  const max=Math.ceil(Math.max(...data.map(d=>d.j))/5)*5;
+  const x=i=>P.l+i*(W-P.l-P.r)/(data.length-1);
+  const y=v=>H-P.b-(v/max)*(H-P.t-P.b);
+  const pts=data.map((d,i)=>`${x(i)},${y(d.j)}`).join(' ');
+  const area=`M${x(0)},${H-P.b} L`+pts.replace(/ /g,' L')+` L${x(data.length-1)},${H-P.b} Z`;
+  let grid='';for(let g=0;g<=4;g++){const v=max*g/4;grid+=`<line x1="${P.l}" y1="${y(v)}" x2="${W-P.r}" y2="${y(v)}" stroke="#EDEDE8"/>
+    <text x="${P.l-10}" y="${y(v)+5}" text-anchor="end" font-size="13" fill="#7D7D74" font-family="Urbanist" font-weight="300">${v}</text>`}
+  return `<svg width="100%" viewBox="0 0 ${W} ${H}" role="img" aria-label="Tren jam video tujuh hari terakhir">
+    ${grid}
+    <path d="${area}" fill="var(--nila-100)" opacity=".55"/>
+    <polyline points="${pts}" fill="none" stroke="var(--nila-600)" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round"/>
+    ${data.map((d,i)=>`<circle cx="${x(i)}" cy="${y(d.j)}" r="4" fill="#fff" stroke="var(--nila-600)" stroke-width="2.5"/>
+      <text x="${x(i)}" y="${H-10}" text-anchor="middle" font-size="13" fill="#7D7D74" font-family="Urbanist" font-weight="300">${d.d}</text>`).join('')}
+  </svg>`}
+
+/* ---------- LAPORAN ---------- */
+V.laporan=()=>{
+  if(S.sel)return lapDetail();
+  const M=me();
+  let rows=lapScoped();
+  if(S.q)rows=rows.filter(r=>(r.dco+r.rows.map(x=>x.task+x.device).join('')).toLowerCase().includes(S.q.toLowerCase()));
+  if(S.fTask!=='Semua')rows=rows.filter(r=>r.rows.some(x=>x.task===S.fTask));
+  const flat=[];
+  rows.forEach(l=>l.rows.forEach((x,i)=>{
+    if(S.fTask==='Semua'||x.task===S.fTask)flat.push({...x,no:i+1,lap:l})}));
+  const perBaris=S.view==='baris';
+  const tot=rows.reduce((a,l)=>a+jamLap(l),0);
+  const sw=(k,lbl,ic)=>`<button class="chip ${S.view===k?'on':''}" onclick="S.view='${k}';paint()"><i class="ti ti-${ic}"></i> ${lbl}</button>`;
+  return pageTop('Laporan Pekerjaan',`${akumulasi()?'Akumulasi '+cakupan().length+' cabang':'Cabang '+cakupan()[0]} · ${rows.length} laporan · ${JAM(tot)}`,
+    `<button class="btn btn-p" onclick="toast('File Excel dibuat sesuai filter dan tampilan yang sedang aktif.','ok')"><i class="ti ti-download"></i> Export Excel</button>`)+`<div class="body">
+   <div class="tools">
+     <div class="search"><i class="ti ti-search"></i><input placeholder="Cari nama DCO, task, atau kode device" value="${S.q}" oninput="S.q=this.value;paint()"></div>
+     <input type="date" value="2026-09-01" style="min-width:150px"><span class="sm">sampai</span><input type="date" value="2026-09-29" style="min-width:150px">
+     <select ${M.cb?'disabled':''} onchange="S.fCb=this.value==='Semua cabang'?'Semua':this.value;paint()">
+       ${M.cb?`<option>${M.cb}</option>`:['Semua cabang',...CBAKTIF].map(x=>`<option ${((x==='Semua cabang'&&S.fCb==='Semua')||x===S.fCb)?'selected':''}>${x}</option>`).join('')}</select>
+     <select onchange="S.fTask=this.value;paint()">${['Semua',...TASK.map(t=>t.nama)].map(x=>`<option ${S.fTask===x?'selected':''}>${x}</option>`).join('')}</select>
+     <select><option>Semua shift</option>${SHIFT.map(x=>`<option>${x.nama}</option>`).join('')}</select>
+     <select><option>Semua device</option>${devScoped().map(d=>`<option>${d.kode}</option>`).join('')}</select>
+   </div>
+
+   <div style="display:flex;gap:9px;margin-bottom:16px">${sw('laporan','Per laporan','clipboard-list')}${sw('baris','Per baris task','list-details')}</div>
+
+   ${perBaris?`
+   <div class="card"><table><thead><tr>
+     <th>Tanggal</th><th>DCO</th>${akumulasi()?'<th>Cabang</th>':''}<th>Shift</th><th>Task</th><th>Device</th><th>Powerbank</th><th>Battery</th><th>Durasi</th><th>Supervisor</th>
+   </tr></thead><tbody>
+   ${flat.length?flat.map(f=>`<tr class="click" onclick="S.sel='${f.lap.id}';paint()">
+     <td><span class="nm">${f.lap.tgl}</span></td><td>${f.lap.dco}</td>
+     ${akumulasi()?`<td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${f.lap.cabang}</td>`:''}
+     <td>${f.lap.shift}</td><td>${f.task}</td><td class="mono">${f.device}</td>
+     <td>${f.pb?pill('wait','Ya'):pill('off','Tidak')}</td>
+     <td>${f.bat<20?pill('bad',f.bat+'%'):f.bat<40?pill('wait',f.bat+'%'):pill('ok',f.bat+'%')}</td>
+     <td class="mono">1 jam</td>
+     <td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${f.lap.spv}</td></tr>`).join('')
+   :`<tr><td colspan="10"><div class="empty"><i class="ti ti-clipboard-list"></i>
+     <h2 style="margin-top:12px">Tidak ada baris yang cocok</h2><p class="sm">Coba ubah filter atau kata pencarian.</p></div></td></tr>`}
+   </tbody></table></div>
+   <p class="sm" style="margin-top:12px">Tampilan ini menyajikan satu baris untuk setiap task, siap diolah dengan pivot setelah diekspor.</p>`
+   :`
+   <div class="card"><table><thead><tr>
+     <th>Tanggal</th><th>DCO</th>${akumulasi()?'<th>Cabang</th>':''}<th>Shift</th><th>Jumlah Task</th><th>Total Video</th><th>Device Dipakai</th><th>Supervisor</th><th></th>
+   </tr></thead><tbody>
+   ${rows.length?rows.map(r=>{const sh=shiftOf(r.shift);const lebih=sh&&r.rows.length>sh.efektif;
+     return `<tr class="click" onclick="S.sel='${r.id}';paint()">
+     <td><span class="nm">${r.tgl}</span><div class="sm mono">${r.jam2}</div></td>
+     <td>${r.dco}</td>${akumulasi()?`<td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${r.cabang}</td>`:''}
+     <td>${r.shift}${sh?`<div class="sm mono">${sh.mulai}–${sh.selesai}</div>`:''}</td>
+     <td class="mono">${r.rows.length} task</td>
+     <td class="mono" style="font-weight:600">${JAM(jamLap(r))}${lebih?` <span class="pill s-wait" style="margin-left:6px">lembur</span>`:''}</td>
+     <td class="mono">${[...new Set(r.rows.map(x=>x.device))].join(', ')}</td>
+     <td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${r.spv}</td>
+     <td style="text-align:right"><button class="btn btn-g btn-sm">Detail</button></td></tr>`}).join('')
+   :`<tr><td colspan="9"><div class="empty"><i class="ti ti-clipboard-list"></i>
+     <h2 style="margin-top:12px">Tidak ada laporan yang cocok</h2><p class="sm">Coba ubah filter atau kata pencarian.</p></div></td></tr>`}
+   </tbody></table></div>
+   <p class="sm" style="margin-top:12px">Hasil export tampilan ini mengikuti format pencatatan lapangan: kepala laporan diikuti baris task dan baris total.</p>`}
+  </div>`};
+
+function lapDetail(){
+  const r=LAP.find(x=>x.id===S.sel);const sh=shiftOf(r.shift);
+  const lebih=sh&&r.rows.length>sh.efektif;
+  const perTask={};r.rows.forEach(x=>{perTask[x.task]=(perTask[x.task]||0)+1});
+  const devs=[...new Set(r.rows.map(x=>x.device))];
+  const kritis=r.rows.filter(x=>x.bat<20);
+  return pageTop('Detail Laporan',`${r.id} · diinput oleh ${r.spv}`,
+    `<button class="btn btn-g" onclick="toast('File Excel laporan ${r.id} dibuat.','ok')"><i class="ti ti-download"></i> Export</button>
+     <button class="btn btn-g" onclick="S.sel=null;paint()"><i class="ti ti-arrow-left"></i> Kembali</button>`)+`<div class="body">
+   <div class="card"><div class="bd" style="background:var(--nila-50);border-radius:16px">
+     <div style="display:grid;grid-template-columns:repeat(5,1fr);gap:20px">
+       <div><div class="sm">Tanggal</div><div style="font-weight:600;margin-top:4px">${r.tgl}</div></div>
+       <div><div class="sm">Shift</div><div style="font-weight:600;margin-top:4px">${r.shift}${sh?` <span class="sm mono">${sh.mulai}–${sh.selesai}</span>`:''}</div></div>
+       <div><div class="sm">Supervisor</div><div style="font-weight:600;margin-top:4px">${r.spv}</div></div>
+       <div><div class="sm">Nama DCO</div><div style="font-weight:600;margin-top:4px">${r.dco}</div></div>
+       <div><div class="sm">Cabang</div><div style="font-weight:600;margin-top:4px">${r.cabang}</div></div>
+     </div>
+   </div></div>
+
+   <div class="card mt24"><div class="hd"><div><h3>Baris task</h3>
+     <div class="sm">${r.rows.length} task · setiap baris dihitung 1 jam video</div></div>
+     <div class="r">${lebih?pill('wait','Melebihi durasi shift'):pill('ok','Sesuai durasi shift')}</div></div>
+     <table><thead><tr><th style="width:60px">No</th><th>Task</th><th>Device</th><th>Powerbank</th><th>Battery</th><th>Durasi</th></tr></thead><tbody>
+     ${r.rows.map((x,i)=>`<tr>
+       <td class="mono" style="color:var(--ink3);font-weight:600">${i+1}</td>
+       <td><span class="nm">${x.task}</span></td>
+       <td class="mono">${x.device}</td>
+       <td>${x.pb?pill('wait','Ya'):pill('off','Tidak')}</td>
+       <td>${x.bat<20?pill('bad',x.bat+'%'):x.bat<40?pill('wait',x.bat+'%'):pill('ok',x.bat+'%')}</td>
+       <td class="mono">1 jam</td></tr>`).join('')}
+     <tr style="background:var(--kabut-50)"><td></td>
+       <td colspan="4" style="font-weight:600;letter-spacing:.05em;text-transform:uppercase;font-size:14px;color:var(--ink3)">Total video</td>
+       <td class="mono" style="font-weight:700;font-size:18px">${JAM(jamLap(r))}</td></tr>
+     </tbody></table></div>
+
+   <div class="grid2 mt24">
+     <div class="card"><div class="hd"><h3>Kontribusi ke target task</h3></div><div class="bd">
+       ${Object.keys(perTask).map(n=>{const t=TASK.find(x=>x.nama===n);if(!t)return '';
+         const real=realTask(n),tgt=targetTask(n),p=Math.round(real/(tgt||1)*100);
+         return `<div style="padding:11px 0;border-bottom:1px solid var(--kabut-100)">
+           <div style="display:flex;gap:12px;align-items:baseline">
+             <div style="flex:1;font-weight:500">${n}</div>
+             <div class="mono" style="font-weight:600;color:var(--panen-700)">+${JAM(perTask[n])}</div></div>
+           <div style="height:14px;border-radius:5px;background:var(--kabut-100);overflow:hidden;margin-top:8px">
+             <i style="display:block;height:100%;width:${Math.min(100,p)}%;background:var(--nila-500);border-radius:5px"></i></div>
+           <div class="sm" style="margin-top:5px">${JAM(real)} dari ${tgt} jam · ${p}%</div></div>`}).join('')}
+     </div></div>
+
+     <div class="card"><div class="hd"><h3>Kondisi device</h3></div><div class="bd">
+       ${devs.map(d=>{const rs=r.rows.filter(x=>x.device===d);
+         const pb=rs.filter(x=>x.pb).length;const min=Math.min(...rs.map(x=>x.bat));
+         return `<div class="kv"><span class="k">Device ${d}</span>
+           <span class="v mono">${rs.length} task · ${pb} pakai powerbank · terendah ${min}%</span></div>`}).join('')}
+       ${kritis.length?`<div class="bn b-bad mt16"><b>${kritis.length} baris mencatat baterai di bawah 20%.</b>
+         Device ${[...new Set(kritis.map(x=>x.device))].join(', ')} layak dicek tim aset.</div>`:''}
+       ${lebih?`<div class="bn b-wait mt16"><b>Total ${r.rows.length} jam melebihi durasi efektif shift ${r.shift} (${sh.efektif} jam).</b>
+         Supervisor menyimpan laporan ini dengan konfirmasi lembur.</div>`:''}
+     </div></div>
+   </div>
+
+   <div class="card mt24"><div class="hd"><div><h3>Audit log</h3><div class="sm">Setiap perubahan tercatat permanen</div></div></div>
+     <table><thead><tr><th>Waktu</th><th>Oleh</th><th>Aksi</th><th>Field</th><th>Nilai lama</th><th>Nilai baru</th></tr></thead><tbody>
+     <tr><td class="mono">${r.tgl} ${r.jam2}</td><td><span class="nm">${r.spv}</span></td><td>${pill('ok','Buat laporan')}</td><td class="sm">${r.rows.length} baris task</td><td class="sm">—</td><td class="sm">—</td></tr>
+     <tr><td class="mono">${r.tgl} 15:22</td><td><span class="nm">${r.spv}</span></td><td>${pill('run','Ubah')}</td><td>Baris 1 · Battery</td><td class="mono">${r.rows[0].bat+7}%</td><td class="mono">${r.rows[0].bat}%</td></tr>
+     <tr><td class="mono">${r.tgl} 15:24</td><td><span class="nm">${r.spv}</span></td><td>${pill('run','Tambah baris')}</td><td>Baris ${r.rows.length}</td><td class="sm">—</td><td class="sm">${r.rows[r.rows.length-1].task}</td></tr>
+     </tbody></table></div>
+  </div>`}
+
+/* ---------- MASTER DATA ---------- */
+function masterHead(judul,sub,btn,onlySuper){
+  const blok=onlySuper&&S.role!=='super';
+  return pageTop(judul,sub, blok?`<span class="sm">Perubahan hanya oleh Super Admin</span>`
+    :`<button class="btn btn-p" onclick="${btn}"><i class="ti ti-plus"></i> Tambah</button>`)}
+
+V.mCabang=()=>masterHead('Master Data Cabang','Struktur operasional perusahaan',"formCabang()")+`<div class="body">
+  <div class="card"><table><thead><tr><th>Kode</th><th>Nama Cabang</th><th>Alamat</th><th>Penanggung Jawab</th><th>DCO</th><th>Device</th><th>Status</th><th></th></tr></thead><tbody>
+  ${CABANG.map(c=>`<tr>
+    <td class="mono nm">${c.kode}</td><td><span class="nm">${c.nama}</span></td>
+    <td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${c.alamat}</td><td>${c.pj}</td>
+    <td class="mono">${DCO.filter(d=>d.cabang===c.nama).length}</td>
+    <td class="mono">${DEVICE.filter(d=>d.cabang===c.nama).length}</td>
+    <td>${c.status==='aktif'?pill('ok','Aktif'):pill('off','Nonaktif')}</td>
+    <td style="text-align:right;white-space:nowrap">
+      <button class="btn btn-g btn-sm" onclick="formCabang('${c.id}')"><i class="ti ti-edit"></i> Edit</button>
+      <button class="btn btn-bad btn-sm" onclick="toast('${c.status==='aktif'?'Menonaktifkan':'Mengaktifkan'} cabang ${c.nama}. Data historis tetap tersimpan.','info')">${c.status==='aktif'?'Nonaktifkan':'Aktifkan'}</button></td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="bn b-info mt16">Cabang yang dinonaktifkan tidak muncul sebagai pilihan saat membuat laporan baru atau assign Admin Cabang, namun seluruh laporan historisnya tetap tersimpan dan bisa ditelusuri.</div>
+ </div>`;
+
+function formCabang(id){const c=id?CABANG.find(x=>x.id===id):{nama:'',kode:'',alamat:'',pj:''};
+ S.modal=()=>`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal">
+  <div class="hd"><h3>${id?'Ubah cabang '+c.kode:'Tambah cabang baru'}</h3></div>
+  <div class="bd">
+    <div class="f2"><div class="f"><label>Nama cabang</label><input value="${c.nama}" placeholder="Contoh: Jakarta Pusat"></div>
+      <div class="f"><label>Kode cabang</label><input class="mono" value="${c.kode}" placeholder="JKTP"><div class="h">Harus unik</div></div></div>
+    <div class="f"><label>Alamat</label><textarea rows="2" placeholder="Alamat lengkap cabang">${c.alamat}</textarea></div>
+    <div class="f"><label>Penanggung jawab <span style="font-weight:400;color:var(--ink3)">(opsional)</span></label><input value="${c.pj==='—'?'':c.pj}" placeholder="Nama PJ"></div>
+  </div>
+  <div class="ft"><button class="btn btn-g" onclick="closeModal()">Batal</button>
+    <button class="btn btn-p" onclick="closeModal();toast('Cabang tersimpan.','ok')">Simpan</button></div>
+ </div></div>`;paint()}
+
+V.mShift=()=>masterHead('Master Data Shift','Jadwal kerja yang bisa dipilih Supervisor',"formShift()",true)+`<div class="body">
+  <div class="card"><table><thead><tr><th>Nama Shift</th><th>Jam Mulai</th><th>Jam Selesai</th><th>Durasi Kerja Efektif</th><th>Berlaku</th><th>Status</th><th></th></tr></thead><tbody>
+  ${SHIFT.map(s=>`<tr><td><span class="nm">${s.nama}</span></td><td class="mono">${s.mulai}</td><td class="mono">${s.selesai}</td>
+    <td class="mono">${s.efektif} jam</td><td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">Seluruh cabang</td>
+    <td>${pill('ok','Aktif')}</td>
+    <td style="text-align:right">${S.role==='super'?`<button class="btn btn-g btn-sm" onclick="formShift('${s.id}')"><i class="ti ti-edit"></i> Edit</button>`:'<span class="sm">Baca saja</span>'}</td></tr>`).join('')}
+  </tbody></table></div>
+ </div>`;
+
+function formShift(id){const s=id?SHIFT.find(x=>x.id===id):{nama:'',mulai:'',selesai:'',efektif:''};
+ S.modal=()=>`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal">
+  <div class="hd"><h3>${id?'Ubah shift':'Tambah shift'}</h3></div>
+  <div class="bd">
+    <div class="f"><label>Nama shift</label><input value="${s.nama}" placeholder="Contoh: Pagi"></div>
+    <div class="f2"><div class="f"><label>Jam mulai</label><input type="time" value="${s.mulai}"></div>
+      <div class="f"><label>Jam selesai</label><input type="time" value="${s.selesai}"></div></div>
+    <div class="f"><label>Durasi kerja efektif</label><input class="mono" value="${s.efektif}" placeholder="8">
+      <div class="h">Jam kerja di luar istirahat. Dipakai untuk memperingatkan Supervisor bila jumlah baris task melebihi angka ini.</div></div>
+    <div class="f"><label>Berlaku untuk</label><select><option>Seluruh cabang</option>${CABANG.map(c=>`<option>Hanya ${c.nama}</option>`).join('')}</select></div>
+  </div>
+  <div class="ft"><button class="btn btn-g" onclick="closeModal()">Batal</button>
+    <button class="btn btn-p" onclick="closeModal();toast('Shift tersimpan.','ok')">Simpan</button></div>
+ </div></div>`;paint()}
+
+V.mDevice=()=>{const M=me();const rows=devScoped();
+ return masterHead('Master Data Device',`${M.cb?'Device di cabang '+M.cb:'Seluruh device perusahaan'}`,"formDevice()")+`<div class="body">
+  <div class="tools"><div class="search"><i class="ti ti-search"></i><input placeholder="Cari nama atau kode device"></div>
+    <select ${M.cb?'disabled':''}>${M.cb?`<option>${M.cb}</option>`:['Semua cabang',...CABANG.map(c=>c.nama)].map(x=>`<option>${x}</option>`).join('')}</select>
+    <select><option>Semua status</option><option>Aktif</option><option>Rusak</option><option>Maintenance</option></select></div>
+  <div class="card"><table><thead><tr><th>Kode Device</th><th>Tipe</th>${M.cb?'':'<th>Cabang</th>'}<th>Dipakai</th><th>Rata-rata Baterai</th><th>Status</th><th></th></tr></thead><tbody>
+  ${rows.map(d=>`<tr><td class="mono nm">${d.kode}</td><td>${d.tipe}</td>
+    ${M.cb?'':`<td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${d.cabang}</td>`}
+    <td class="mono">${d.pakai}× · ${JAM(d.jam)}</td>
+    <td>${d.bat<20?pill('bad',d.bat+'%'):d.bat<40?pill('wait',d.bat+'%'):pill('ok',d.bat+'%')}</td>
+    <td>${d.status==='aktif'?pill('ok','Aktif'):d.status==='rusak'?pill('bad','Rusak'):pill('wait','Maintenance')}</td>
+    <td style="text-align:right"><button class="btn btn-g btn-sm" onclick="formDevice('${d.id}')"><i class="ti ti-edit"></i> Edit</button></td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="bn b-info mt16">Device berstatus <b>Rusak</b> atau <b>Maintenance</b> tidak muncul sebagai pilihan di form laporan Supervisor, tapi tetap tampil pada riwayat laporan lama.</div>
+ </div>`};
+
+function formDevice(id){const d=id?DEVICE.find(x=>x.id===id):{kode:'',tipe:'',cabang:me().cb||'',status:'aktif'};
+ S.modal=()=>`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal">
+  <div class="hd"><h3>${id?'Ubah device '+d.kode:'Tambah device'}</h3></div>
+  <div class="bd">
+    <div class="f2"><div class="f"><label>Kode device</label><input class="mono" value="${d.kode}" placeholder="1033"><div class="h">Angka unik yang tertera pada fisik device</div></div>
+      <div class="f"><label>Tipe device</label><input value="${d.tipe}" placeholder="Sony ZV-E10"></div></div>
+    <div class="f"><label>Cabang penempatan</label><select ${me().cb?'disabled':''}>${CABANG.filter(c=>c.status==='aktif').map(c=>`<option ${c.nama===d.cabang?'selected':''}>${c.nama}</option>`).join('')}</select>
+      ${me().cb?`<div class="h">Terkunci di cabang Anda</div>`:''}</div>
+    <div class="f"><label>Status</label><select>${['Aktif','Rusak','Maintenance'].map(x=>`<option ${x.toLowerCase()===d.status?'selected':''}>${x}</option>`).join('')}</select></div>
+  </div>
+  <div class="ft"><button class="btn btn-g" onclick="closeModal()">Batal</button>
+    <button class="btn btn-p" onclick="closeModal();toast('Device tersimpan.','ok')">Simpan</button></div>
+ </div></div>`;paint()}
+
+V.mDCO=()=>{const M=me();const rows=dcoScoped();
+ return masterHead('Master Data DCO',`${M.cb?'DCO di cabang '+M.cb:'Seluruh Digital Content Officer'} · ${rows.length} orang`,"formDCO()")+`<div class="body">
+  <div class="tools"><div class="search"><i class="ti ti-search"></i><input placeholder="Cari nama DCO"></div>
+    <select ${M.cb?'disabled':''}>${M.cb?`<option>${M.cb}</option>`:['Semua cabang',...CABANG.map(c=>c.nama)].map(x=>`<option>${x}</option>`).join('')}</select>
+    <select><option>Semua status</option><option>Aktif</option><option>Nonaktif</option></select></div>
+  <div class="card"><table><thead><tr><th>Nama Lengkap</th>${M.cb?'':'<th>Cabang</th>'}<th>Nomor Telepon</th><th>Total Jam Video</th><th>Laporan</th><th>Status</th><th></th></tr></thead><tbody>
+  ${rows.map(d=>`<tr><td><span class="nm">${d.nama}</span></td>
+    ${M.cb?'':`<td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${d.cabang}</td>`}
+    <td class="mono">${d.telp}</td><td class="mono" style="font-weight:600">${JAM(d.jam)}</td><td class="mono">${d.lap}</td>
+    <td>${d.status==='aktif'?pill('ok','Aktif'):pill('off','Nonaktif')}</td>
+    <td style="text-align:right"><button class="btn btn-g btn-sm" onclick="formDCO('${d.id}')"><i class="ti ti-edit"></i> Edit</button></td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="bn b-info mt16">DCO nonaktif (resign atau pindah) tidak muncul di form laporan baru, namun riwayat laporannya tetap tersimpan dan dapat ditelusuri.</div>
+ </div>`};
+
+function formDCO(id){const d=id?DCO.find(x=>x.id===id):{nama:'',cabang:me().cb||'',telp:'',status:'aktif'};
+ S.modal=()=>`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal">
+  <div class="hd"><h3>${id?'Ubah data DCO':'Tambah DCO'}</h3></div>
+  <div class="bd">
+    <div class="f"><label>Nama lengkap</label><input value="${d.nama}" placeholder="Nama DCO"></div>
+    <div class="f"><label>Cabang penempatan</label><select ${me().cb?'disabled':''}>${CABANG.filter(c=>c.status==='aktif').map(c=>`<option ${c.nama===d.cabang?'selected':''}>${c.nama}</option>`).join('')}</select></div>
+    <div class="f"><label>Nomor telepon <span style="font-weight:400;color:var(--ink3)">(opsional)</span></label><input class="mono" value="${d.telp}" placeholder="0812-3456-7890"></div>
+    <div class="f"><label>Status</label><select><option ${d.status==='aktif'?'selected':''}>Aktif</option><option ${d.status!=='aktif'?'selected':''}>Nonaktif</option></select></div>
+  </div>
+  <div class="ft"><button class="btn btn-g" onclick="closeModal()">Batal</button>
+    <button class="btn btn-p" onclick="closeModal();toast('Data DCO tersimpan.','ok')">Simpan</button></div>
+ </div></div>`;paint()}
+
+V.mTask=()=>masterHead('Master Data Task & Target Jam',akumulasi()?`Target per cabang ${targetCabang()} jam · akumulasi ${cakupan().length} cabang jadi ${totalTarget()} jam`:`Target untuk cabang ${cakupan()[0]}`,"formTask()",true)+`<div class="body">
+  <div class="card"><table><thead><tr><th>Nama Task</th><th>Deskripsi</th><th>Target Jam</th><th>Realisasi</th><th>Pencapaian</th><th>Status</th><th></th></tr></thead><tbody>
+  ${TASK.map(t=>{const r=realTask(t.nama),tg=targetTask(t.nama)||t.target;
+   const p=Math.round(r/tg*100);const k=stTask(t);
+   return `<tr><td><span class="nm">${t.nama}</span></td>
+    <td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2);max-width:320px">${t.desc}</td>
+    <td class="mono" style="font-weight:600">${tg} jam${akumulasi()?`<div class="sm">${TARGET[t.nama]||t.target} × ${cakupan().length} cabang</div>`:''}</td>
+    <td class="mono">${JAM(r)}</td>
+    <td style="min-width:170px"><div style="display:flex;align-items:center;gap:10px">
+      <div style="flex:1;height:8px;border-radius:4px;background:var(--kabut-100);overflow:hidden">
+        <i style="display:block;height:100%;width:${Math.min(100,p)}%;border-radius:4px" class="bar-${k}"></i></div>
+      <span class="mono" style="font-weight:600;font-size:14px">${p}%</span></div></td>
+    <td>${t.status==='aktif'?pill('ok','Aktif'):pill('off','Draft')}</td>
+    <td style="text-align:right">${S.role==='super'?`<button class="btn btn-g btn-sm" onclick="formTask('${t.id}')"><i class="ti ti-edit"></i> Edit</button>`:'<span class="sm">Baca saja</span>'}</td></tr>`}).join('')}
+  </tbody></table></div>
+  <div class="bn b-wait mt16"><b>Perubahan target tercatat dengan tanggal efektif.</b> Progress periode lama tidak ikut berubah ketika target baru ditetapkan, sehingga laporan bulan sebelumnya tetap valid.</div>
+ </div>`;
+
+function formTask(id){const t=id?TASK.find(x=>x.id===id):{nama:'',desc:'',target:'',status:'draft'};
+ S.modal=()=>`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal">
+  <div class="hd"><h3>${id?'Ubah task '+t.nama:'Tambah task baru'}</h3></div>
+  <div class="bd">
+    <div class="f"><label>Nama task</label><input value="${t.nama}" placeholder="Contoh: Setrika"></div>
+    <div class="f"><label>Deskripsi <span style="font-weight:400;color:var(--ink3)">(opsional)</span></label><textarea rows="2" placeholder="Penjelasan singkat task">${t.desc}</textarea></div>
+    <div class="f2">
+      <div class="f"><label>Target jam video</label><div class="sfx"><input class="mono" value="${t.target}" placeholder="40"><span>jam</span></div>
+        <div class="h">Berlaku <b>per cabang</b>. Super Admin melihat akumulasinya di dashboard.</div></div>
+      <div class="f"><label>Berlaku efektif</label><input type="date" value="2026-10-01"><div class="h">Progress sebelum tanggal ini tidak berubah</div></div>
+    </div>
+    <div class="f"><label>Periode target</label><select><option>Global (tanpa batas periode)</option><option>Per bulan</option><option>Per kuartal</option></select></div>
+    <div class="f"><label>Status</label><select><option ${t.status==='aktif'?'selected':''}>Aktif</option><option ${t.status!=='aktif'?'selected':''}>Draft</option></select>
+      <div class="h">Task draft tidak muncul sebagai pilihan di form laporan Supervisor</div></div>
+  </div>
+  <div class="ft"><button class="btn btn-g" onclick="closeModal()">Batal</button>
+    <button class="btn btn-p" onclick="closeModal();toast('Task dan targetnya tersimpan.','ok')">Simpan</button></div>
+ </div></div>`;paint()}
+
+/* ---------- PENGGUNA ---------- */
+V.uSpv=()=>{const M=me();const rows=spvScoped();
+ return pageTop('Manajemen Supervisor',`${M.cb?'Supervisor di cabang '+M.cb:'Seluruh supervisor'} · ${rows.length} akun`,
+   S.role==='super'?`<button class="btn btn-p" onclick="formSpv()"><i class="ti ti-plus"></i> Tambah Supervisor</button>`
+   :`<span class="sm">Penambahan akun hanya oleh Super Admin</span>`)+`<div class="body">
+  <div class="card"><table><thead><tr><th>Kode</th><th>Nama</th><th>Email</th><th>Telepon</th>${M.cb?'':'<th>Cabang</th>'}<th>Role</th><th>Laporan Diinput</th><th>Status</th><th></th></tr></thead><tbody>
+  ${rows.map(s=>`<tr><td class="mono nm">${s.kode}</td><td><span class="nm">${s.nama}</span></td>
+    <td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${s.email}</td><td class="mono">${s.telp}</td>
+    ${M.cb?'':`<td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${s.cabang}</td>`}
+    <td>${s.admin?pill('run','Admin + SPV'):pill('off','SPV')}</td>
+    <td class="mono">${s.lap}</td>
+    <td>${s.status==='aktif'?pill('ok','Aktif'):pill('off','Nonaktif')}</td>
+    <td style="text-align:right;white-space:nowrap">${S.role==='super'
+      ?`<button class="btn btn-g btn-sm" onclick="formSpv('${s.id}')"><i class="ti ti-edit"></i> Edit</button>
+        <button class="btn btn-bad btn-sm" onclick="toast('${s.status==='aktif'?'Menonaktifkan':'Mengaktifkan'} akun ${s.nama}.','info')">${s.status==='aktif'?'Nonaktifkan':'Aktifkan'}</button>`
+      :'<span class="sm">Baca saja</span>'}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="bn b-info mt16">Supervisor dengan role <b>Admin + SPV</b> memakai satu akun untuk dua platform: Konsol Admin ini dan Web App input laporan. Tombol pindah platform tersedia di bagian bawah menu kiri.</div>
+ </div>`};
+
+function formSpv(id){const s=id?SPV.find(x=>x.id===id):{kode:'',nama:'',email:'',telp:'',cabang:'',admin:false};
+ S.modal=()=>`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal">
+  <div class="hd"><h3>${id?'Ubah akun '+s.nama:'Tambah Supervisor'}</h3></div>
+  <div class="bd">
+    <div class="f2"><div class="f"><label>Kode pegawai</label><input class="mono" value="${s.kode}" placeholder="202"><div class="h">Angka unik, tampil sebagai <b>202 - Ulfa</b> di laporan</div></div>
+      <div class="f"><label>Nama lengkap</label><input value="${s.nama}" placeholder="Nama supervisor"></div></div>
+    <div class="f2"><div class="f"><label>Email</label><input type="email" value="${s.email}" placeholder="nama@dcotrack.id"><div class="h">Harus unik, dipakai sebagai username</div></div>
+      <div class="f"><label>Nomor telepon</label><input class="mono" value="${s.telp}" placeholder="0812-3456-7890"></div></div>
+    <div class="f"><label>Cabang penempatan</label><select>${CABANG.filter(c=>c.status==='aktif').map(c=>`<option ${c.nama===s.cabang?'selected':''}>${c.nama}</option>`).join('')}</select></div>
+    <div class="f"><label>Hak akses</label>
+      <label style="display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid ${s.admin?'var(--nila-200)':'var(--lineIn)'};border-radius:12px;background:${s.admin?'var(--nila-50)':'#fff'};cursor:pointer">
+        <input type="checkbox" ${s.admin?'checked':''} style="width:auto;min-height:0;margin-top:3px">
+        <span><b style="font-size:16px;font-weight:600">Berikan juga role Admin Cabang</b><br>
+        <span class="sm">Akun ini bisa masuk ke Konsol Admin untuk cabangnya, sekaligus tetap menginput laporan di Web App.</span></span></label></div>
+    <div class="bn b-info">Setelah disimpan, sistem mengirim email berisi username dan password sementara. Password wajib diganti saat login pertama.</div>
+  </div>
+  <div class="ft"><button class="btn btn-g" onclick="closeModal()">Batal</button>
+    <button class="btn btn-p" onclick="closeModal();toast('Akun dibuat. Email undangan terkirim.','ok')">Simpan &amp; kirim undangan</button></div>
+ </div></div>`;paint()}
+
+V.uAdmin=()=>pageTop('Manajemen Admin Cabang','Hanya Super Admin yang bisa membuka halaman ini',
+  `<button class="btn btn-p" onclick="formAdmin()"><i class="ti ti-plus"></i> Assign Admin Cabang</button>`)+`<div class="body">
+  <div class="card"><table><thead><tr><th>Nama</th><th>Email</th><th>Cabang Tanggung Jawab</th><th>Asal Akun</th><th>Status</th><th></th></tr></thead><tbody>
+  ${[{n:'Rina Kartika',e:'rina.k@dcotrack.id',cb:'Seluruh cabang',asal:'Super Admin',st:'aktif',self:true},
+     {n:'Intan Permata',e:'intan.p@dcotrack.id',cb:'Bandung',asal:'Akun baru',st:'aktif'},
+     {n:'Dewi Anggraini',e:'dewi.a@dcotrack.id',cb:'Jakarta Pusat',asal:'Supervisor yang sudah ada',st:'aktif'}]
+   .map(a=>`<tr><td><span class="nm">${a.n}</span>${a.self?' <span class="pill s-run" style="margin-left:8px">Akun Anda</span>':''}</td>
+    <td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${a.e}</td><td>${a.cb}</td>
+    <td class="sm" style="font-size:16px;font-weight:400;color:var(--ink2)">${a.asal}</td>
+    <td>${pill('ok','Aktif')}</td>
+    <td style="text-align:right;white-space:nowrap">${a.self?'<span class="sm">Tidak bisa diubah sendiri</span>'
+      :`<button class="btn btn-g btn-sm" onclick="toast('Mengubah cabang tanggung jawab ${a.n}.','info')">Ubah cabang</button>
+        <button class="btn btn-bad btn-sm" onclick="toast('Role Admin Cabang ${a.n} dicabut. Akun tetap bisa dipakai sebagai Supervisor.','info')">Cabut role</button>`}</td></tr>`).join('')}
+  </tbody></table></div>
+  <div class="card mt24"><div class="hd"><h3>Wewenang per role</h3></div>
+   <table><thead><tr><th>Modul</th><th>Super Admin</th><th>Admin Cabang</th><th>Supervisor</th></tr></thead><tbody>
+   ${[['Dashboard Analitik','Seluruh cabang','Cabangnya saja','—'],
+      ['Laporan Pekerjaan','Seluruh cabang','Cabangnya saja','Miliknya saja'],
+      ['Master Data Cabang','Kelola','—','—'],
+      ['Master Data Shift & Task','Kelola','Baca saja','—'],
+      ['Master Data Device & DCO','Kelola','Kelola cabangnya','—'],
+      ['Manajemen Supervisor','Kelola','Baca saja','—'],
+      ['Manajemen Admin Cabang','Kelola','—','—'],
+      ['Input Laporan (Web App)','—','Bila merangkap SPV','Kelola']]
+   .map(([m,a,b,c])=>`<tr><td><span class="nm">${m}</span></td>
+     ${[a,b,c].map(v=>`<td>${v==='Kelola'?pill('ok','Kelola'):v==='—'?'<span class="sm">Tidak ada akses</span>':`<span style="font-size:16px">${v}</span>`}</td>`).join('')}</tr>`).join('')}
+   </tbody></table></div>
+ </div>`;
+
+function formAdmin(){S.modal=()=>`<div class="scrim" onclick="if(event.target===this)closeModal()"><div class="modal">
+  <div class="hd"><h3>Assign Admin Cabang</h3></div>
+  <div class="bd">
+    <div class="f"><label>Sumber akun</label><select onchange="toast('Pilihan sumber akun diubah.','info')">
+      <option>Tunjuk Supervisor yang sudah ada</option><option>Buat akun baru</option></select></div>
+    <div class="f"><label>Pilih Supervisor</label><select>${SPV.filter(s=>!s.admin&&s.status==='aktif').map(s=>`<option>${s.nama} — ${s.cabang}</option>`).join('')}</select>
+      <div class="h">Akun tetap bisa menginput laporan di Web App seperti biasa</div></div>
+    <div class="f"><label>Cabang tanggung jawab</label><select>${CABANG.filter(c=>c.status==='aktif').map(c=>`<option>${c.nama}</option>`).join('')}</select>
+      <div class="h">Satu cabang boleh punya lebih dari satu Admin Cabang</div></div>
+    <div class="bn b-info">Admin Cabang login ke Konsol Admin dengan data yang otomatis terbatas pada cabangnya. Super Admin dapat mencabut role ini kapan saja.</div>
+  </div>
+  <div class="ft"><button class="btn btn-g" onclick="closeModal()">Batal</button>
+    <button class="btn btn-p" onclick="closeModal();toast('Role Admin Cabang diberikan. Email pemberitahuan terkirim.','ok')">Assign role</button></div>
+ </div></div>`;paint()}
+
+/* ---------- PROFIL ---------- */
+V.profil=()=>{const M=me();const ini=M.n.split(' ').map(x=>x[0]).slice(0,2).join('');
+ return pageTop('Profil & Pengaturan Akun','Data akun dan keamanan')+`<div class="body">
+  <div class="grid2">
+    <div class="card"><div class="hd"><h3>Data akun</h3></div><div class="bd">
+      <div style="display:flex;align-items:center;gap:16px;margin-bottom:20px">
+        <div style="width:64px;height:64px;border-radius:18px;background:var(--nila-50);color:var(--nila-700);display:flex;align-items:center;justify-content:center;font-size:24px;font-weight:700">${ini}</div>
+        <div><div style="font-size:20px;font-weight:700;letter-spacing:-.02em">${M.n}</div>
+        <div class="sm">${M.r}${M.cb?' · '+M.cb:''}</div>
+        <button class="btn btn-g btn-sm" style="margin-top:10px" onclick="toast('Memilih foto profil baru.','info')"><i class="ti ti-camera"></i> Ubah foto</button></div>
+      </div>
+      <div class="f"><label>Nama lengkap</label><input value="${M.n}"></div>
+      <div class="f"><label>Email</label><input value="${M.n.toLowerCase().split(' ')[0]}.${M.n.toLowerCase().split(' ')[1][0]}@dcotrack.id" disabled>
+        <div class="h">Email tidak bisa diubah karena berfungsi sebagai username</div></div>
+      <div class="f"><label>Nomor telepon</label><input class="mono" value="0812-1111-2222"></div>
+      <button class="btn btn-p" onclick="toast('Profil tersimpan.','ok')">Simpan perubahan</button>
+    </div></div>
+
+    <div>
+      <div class="card"><div class="hd"><h3>Ubah password</h3></div><div class="bd">
+        <div class="f"><label>Password lama</label><input type="password" placeholder="Masukkan password saat ini"></div>
+        <div class="f"><label>Password baru</label><input type="password" placeholder="Minimal 8 karakter"></div>
+        <div class="f"><label>Ulangi password baru</label><input type="password" placeholder="Ketik ulang password baru"></div>
+        <button class="btn btn-p" onclick="toast('Password diperbarui. Seluruh sesi lain otomatis keluar.','ok')"><i class="ti ti-key"></i> Perbarui password</button>
+      </div></div>
+
+      <div class="card mt24"><div class="hd"><h3>Hak akses</h3></div><div class="bd">
+        <div class="kv"><span class="k">Role</span><span class="v">${pill('run',M.r)}</span></div>
+        <div class="kv"><span class="k">Cakupan data</span><span class="v">${M.cb||'Seluruh cabang'}</span></div>
+        <div class="kv"><span class="k">Platform yang bisa diakses</span><span class="v">${S.role==='dual'?'Konsol Admin + Web App':'Konsol Admin'}</span></div>
+        ${S.role!=='super'?`<div class="bn b-info mt16">Perubahan cabang penempatan dan hak akses hanya bisa dilakukan Super Admin.</div>`:''}
+      </div></div>
+    </div>
+  </div>
+ </div>`};
+
+paint();
+</script>
+</body>
+</html>
