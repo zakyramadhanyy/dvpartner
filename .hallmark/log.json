@@ -1,0 +1,43 @@
+[
+ {
+  "mode": "redesign",
+  "depth": "full",
+  "scope": "page",
+  "shape": "kept (intelligentmotion.ai homepage order)",
+  "theme": "brand (DESIGN.md, locked)",
+  "axes": "light/grotesk-sans/chromatic-blue",
+  "hero": "Stage",
+  "nav": "edge-aligned bar, in-page index",
+  "footer": "colophon",
+  "imagery": "library photos 5 (stand-ins) + product screenshot 1",
+  "photos": [
+   "US Navy 040427-N-0000W-028",
+   "Traditional floating vegetable garden 34.jpg",
+   "Bike repair is taking place in a workshop",
+   "Woman sewing a face mask with a Singer machine 14.jpg",
+   "Kneading Chapati Dough 04.jpg"
+  ],
+  "entry": "index.html",
+  "sections": [
+   "hero: environment switcher",
+   "rows: problem",
+   "grid band: delivers",
+   "split: steps + DCOTrack screenshot",
+   "table: environments",
+   "band: capacity",
+   "split rows: consent",
+   "code + text: delivery format",
+   "rows: faq",
+   "form: start with a sample",
+   "colophon"
+  ],
+  "signature": "one frame switching across five recording environments",
+  "waived": [
+   "1",
+   "66",
+   "77"
+  ],
+  "prompt": "Physical AI training data, egocentric video across many environments, for international buyers; single landing page",
+  "date": "2026-11-23"
+ }
+]
